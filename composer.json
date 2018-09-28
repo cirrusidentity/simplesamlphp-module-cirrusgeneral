@@ -10,7 +10,6 @@
     "require": {
         "php" : ">=5.6",
         "simplesamlphp/composer-module-installer": "^1.1",
-        "league/oauth2-client": "^2.3",
         "simplesamlphp/simplesamlphp": ">=1.16"
     },
     "require-dev": {
