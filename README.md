@@ -15,3 +15,22 @@ Usage:
     ]
 
 ```
+
+# ConditionalSetAuthnContext
+
+This AuthProc filter allows you to assert a specific `authnContextClassRef` if value in
+the users state equals some expected value. For example some upstream systems may indicate
+the user was required to perform MFA by setting an attribute on the user. This filter will allow
+you to assert `https://refeds.org/profile/mfa` if that attribute is present.
+
+Usage:
+```php
+// In your authProc config
+    20 => [
+        'class' => 'cirrusgeneral:ConditionalSetAuthnContext',
+        'path' => ['Attributes', 'mfaActivated'], // The path of keys to traverse in the request state,
+        'value' =>  'true',  // Using the string 'true' rather than a boolean true
+        'contextToAssert' => 'https://refeds.org/profile/mfa',
+    ]
+
+```

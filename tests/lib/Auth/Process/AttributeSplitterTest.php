@@ -7,9 +7,10 @@
  */
 namespace Test\SimpleSAML\Auth\Process;
 
+use PHPUnit\Framework\TestCase;
 use SimpleSAML\Module\cirrusgeneral\Auth\Process\AttributeSplitter;
 
-class AttributeSplitterTest extends \PHPUnit_Framework_TestCase
+class AttributeSplitterTest extends TestCase
 {
 
     public function setup()
