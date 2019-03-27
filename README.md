@@ -31,6 +31,7 @@ Usage:
         'path' => ['Attributes', 'mfaActivated'], // The path of keys to traverse in the request state,
         'value' =>  'true',  // Using the string 'true' rather than a boolean true
         'contextToAssert' => 'https://refeds.org/profile/mfa',
+        'ignoreForEntities' => ['match1', 'match2', 'other']
     ]
 
 ```

@@ -82,4 +82,48 @@ class ConditionalSetAuthnContextTest extends \PHPUnit\Framework\TestCase
             ['F', 'mycontext', 'newContext'],
         ];
     }
+
+    /**
+     * @dataProvider spIgnoreListProvider
+     * @param null|string $spEntityId
+     */
+    public function testSpIgnoreList(?string $spEntityId, $expectedContext)
+    {
+        $state = [
+            'keyToCheck' => 'enableContext',
+            'saml:AuthnContextClassRef' => 'oldContext',
+
+        ];
+
+        if ($spEntityId) {
+            $state['Destination'] = array(
+                'metadata-set' => 'saml20-sp-remote',
+                'entityid' => $spEntityId,
+            );
+        }
+
+        $config = [
+            'path' => ['keyToCheck'],
+            'value' => 'enableContext',
+            'contextToAssert' => 'newContext',
+            'ignoreForEntities' => ['match1', 'match2', 'other']
+        ];
+
+        $filter = new ConditionalSetAuthnContext($config, null);
+        $filter->process($state);
+
+        $this->assertArrayHasKey('saml:AuthnContextClassRef', $state);
+        $this->assertEquals($expectedContext, $state['saml:AuthnContextClassRef']);
+    }
+
+    public function spIgnoreListProvider(): array
+    {
+        return [
+            [null, 'newContext'],
+            ['noMatchId', 'newContext'],
+            // Ignored sps should get old context
+            ['match1', 'oldContext'],
+            ['match2', 'oldContext']
+        ];
+    }
 }

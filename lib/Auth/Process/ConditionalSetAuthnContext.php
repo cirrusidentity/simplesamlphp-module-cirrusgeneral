@@ -22,7 +22,15 @@ class ConditionalSetAuthnContext extends \SimpleSAML_Auth_ProcessingFilter
      */
     private $value;
 
+    /**
+     * @var string the value to assert for a context
+     */
     private $contextToAssert;
+
+    /**
+     * @var array Entities that we shouldn't run this filter on.
+     */
+    private $ignoreForEntities;
 
     public function __construct(&$config, $reserved)
     {
@@ -31,6 +39,7 @@ class ConditionalSetAuthnContext extends \SimpleSAML_Auth_ProcessingFilter
         $this->path = $config->getArrayizeString('path', ',');
         $this->value = $config->getValue('value');
         $this->contextToAssert = $config->getString('contextToAssert');
+        $this->ignoreForEntities = $config->getArray('ignoreForEntities', []);
     }
 
 
@@ -41,6 +50,11 @@ class ConditionalSetAuthnContext extends \SimpleSAML_Auth_ProcessingFilter
      */
     public function process(&$request)
     {
+        $spEntityId = $request['Destination']['entityid'] ?? 'no-sp-entity-id';
+        if (in_array($spEntityId, $this->ignoreForEntities)) {
+            Logger::debug("No authn context changes for '$spEntityId'");
+            return;
+        }
         $traversedValue = $request;
         foreach ($this->path as $key) {
             if (!is_array($traversedValue)) {
