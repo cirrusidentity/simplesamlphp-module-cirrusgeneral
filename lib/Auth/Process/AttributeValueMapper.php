@@ -51,7 +51,7 @@ class AttributeValueMapper extends \SimpleSAML_Auth_ProcessingFilter
             while (($data = fgetcsv($csv, 1000, ",")) !== false) {
                 // Expect 4 columns
                 // sourceAttribute,sourceValue,destinationAttribute,destinationValue
-                $this->mappingLookup[$data[0]][$data[1]][$data[2]][] = $data[3];
+                $this->mappingLookup[trim($data[0])][trim($data[1])][trim($data[2])][] = trim($data[3]);
             }
             fclose($csv);
         }

@@ -8,7 +8,7 @@ group-test,incoming-Student,entitlement,https://example.com/checkfinacialAid
 group-test,newStudent,entitlement,urn:blah:blahstudent-app
 group-med,med-student,eduPersonAffiliation,student
 group-med,med-student,eduPersonAffiliation,other
-group-med,newStudent,entitlement,urn:med:student-app
+   group-med   ,   newStudent   ,   entitlement   ,    urn:med:student-app
 group-med,faculty,entitlement,urn:med:faculty-app
 inc-eduPersonEntitlement,inc-eduPersonEntitlement-everfi,eduPersonEntitlement,http://alcoholedu.com/
 inc-eduPersonEntitlement,inc-eduPersonEntitlement-cayuse24,eduPersonEntitlement,urn:mace:example.edu:eds:entitlement:exmp4ff9
