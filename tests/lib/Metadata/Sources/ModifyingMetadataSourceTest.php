@@ -16,7 +16,11 @@ class ModifyingMetadataSourceTest extends TestCase
                     array('type' => 'flatfile', 'directory' => __DIR__ . '/testMetadata2'),
                 ],
                 'strategies' => [
-                    ['type' => 'SimpleSAML\Module\cirrusgeneral\Metadata\AdfsMetadataStrategy']
+                    ['type' => 'SimpleSAML\Module\cirrusgeneral\Metadata\AdfsMetadataStrategy'],
+                    [
+                        'type' => 'SimpleSAML\Module\cirrusgeneral\Metadata\OverridingMetadataStrategy',
+                        'source' => array('type' => 'flatfile', 'directory' => __DIR__ . '/overrideMetadata'),
+                    ]
                 ],
             ]
         ]
@@ -32,8 +36,13 @@ class ModifyingMetadataSourceTest extends TestCase
             'saml20-idp-remote'
         );
 
-        $this->assertTrue($metadata['disable_scoping']);
-        $this->assertEquals('https://idp.example.eduadfs/ls/', $metadata['SingleSignOnService'][0]['Location']);
+        $this->assertTrue($metadata['disable_scoping'], 'Changed by adfs strategy');
+        $this->assertEquals('customFormat', $metadata['NameIDFormats'][0], 'Changed by override strategy');
+        $this->assertEquals(
+            'https://idp.example.eduadfs/ls/',
+            $metadata['SingleSignOnService'][0]['Location'],
+            'not changed'
+        );
     }
 
     public function testNotFoundMetadataViaHandler()

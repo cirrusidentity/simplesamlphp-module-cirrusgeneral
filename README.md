@@ -2,6 +2,10 @@
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
+- [ModifyingMetadataSource](#modifyingmetadatasource)
+  - [Strategies](#strategies)
+    - [AdfsMetadataStrategy](#adfsmetadatastrategy)
+    - [OverridingMetadataStrategy](#overridingmetadatastrategy)
 - [AttributeSplitter](#attributesplitter)
 - [AttributeValueMapper](#attributevaluemapper)
   - [CSV file format](#csv-file-format)
@@ -28,7 +32,11 @@ edits the metadata before returning it.
                     array('type' => 'flatfile', 'directory' => __DIR__ . '/testMetadata2'),
                 ],
                 'strategies' => [
-                    ['type' => 'SimpleSAML\Module\cirrusgeneral\Metadata\AdfsMetadataStrategy']
+                    ['type' => 'SimpleSAML\Module\cirrusgeneral\Metadata\AdfsMetadataStrategy'],
+                    [
+                        'type' => 'SimpleSAML\Module\cirrusgeneral\Metadata\OverridingMetadataStrategy',
+                        'source' => array('type' => 'flatfile', 'directory' => __DIR__ . '/overrideMetadata'),
+                    ]
                     // some other strategy
                     // ['type' => 'Myclass', 'configOption1' => true],
                 ],
@@ -37,7 +45,18 @@ edits the metadata before returning it.
             // [ 'type' => 'flatfile' ],
         ]
 ```
+## Strategies
 
+### AdfsMetadataStrategy
+
+Add `disable_scoping` to any metadata that looks like ADFS
+
+### OverridingMetadataStrategy
+
+Load additonal metadata from a source and combine it with the main metadata using +.
+A `flatfile` override strategy for `saml-sp-remote` would look in the file `saml-sp-remote-override.php`
+and then return the metadata as `$overrideMetadata + $unalteredMetadata` which will keep
+keys from the override metadata if the same key exists in the regular metadata.
 
 # AttributeSplitter
 
