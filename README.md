@@ -10,6 +10,35 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
+# ModifyingMetadataSource
+
+There is often a need to adjust the metadata for an entityId to fix certain values, or to add
+SSP specific config items. This is difficult to achieve if metadata is loaded from a remote source.
+The `ModifyingMetadataSource` allows you to configure different strategies to change the metadata that is loaded.
+The source delegates to other sources (like mdq or the serialize source) and then
+edits the metadata before returning it.
+
+```php
+ 'metadata.sources' => [
+            [
+                'type' => 'SimpleSAML\Module\cirrusgeneral\Metadata\Sources\ModifyingMetadataSource',
+                // Any sources that you want to delegate to
+                'sources' => [
+                    array('type' => 'flatfile', 'directory' => __DIR__ . '/testMetadata'),
+                    array('type' => 'flatfile', 'directory' => __DIR__ . '/testMetadata2'),
+                ],
+                'strategies' => [
+                    ['type' => 'SimpleSAML\Module\cirrusgeneral\Metadata\AdfsMetadataStrategy']
+                    // some other strategy
+                    // ['type' => 'Myclass', 'configOption1' => true],
+                ],
+            ],
+            // Any sources that you don't want to pass to the modifying strategis
+            // [ 'type' => 'flatfile' ],
+        ]
+```
+
+
 # AttributeSplitter
 
 This AuthProc filter will split an attributes values on a delimiter and turn it into an array.
@@ -31,7 +60,7 @@ Usage:
 # AttributeValueMapper
 
 Maps a source attribute name and value to a new attribute name and values(s) based on `csv` file or
-or on php config. Useful when a datasource (for groups, entitlements, etc) contains names and values that need
+or in php config. Useful when a datasource (for groups, entitlements, etc) contains names and values that need
 to be mapped to something new.
 
 ```php
