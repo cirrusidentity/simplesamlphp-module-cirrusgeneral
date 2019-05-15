@@ -20,6 +20,9 @@ class AdfsMetadataStrategy implements MetadataModifyStrategy
      */
     public function modifyMetadata($metadata, $entityId, $set)
     {
+        if ($metadata == null) {
+            return $metadata;
+        }
         if ($set !== 'saml20-idp-remote') {
             return $metadata;
         }

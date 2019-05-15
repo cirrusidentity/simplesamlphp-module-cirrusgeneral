@@ -73,13 +73,24 @@ class OverridingMetadataStrategyTest extends TestCase
     public function testMatchHasAttributeAdjusted()
     {
         $strategy = new OverridingMetadataStrategy($this->config);
-        $this->assertArrayNotHasKey('disable_scoping', $this->metadata);
+        $this->assertNotEquals('customFormat', $this->metadata['NameIDFormats'][0]);
         $postMetadata = $strategy->modifyMetadata(
             $this->metadata,
             'http://idp.example.edu/adfs/services/trust',
             'saml20-idp-remote'
         );
         $this->assertEquals('customFormat', $postMetadata['NameIDFormats'][0]);
+    }
+
+    public function testNullHandled()
+    {
+        $strategy = new OverridingMetadataStrategy($this->config);
+        $postMetadata = $strategy->modifyMetadata(
+            null,
+            'http://idp.example.edu/adfs/services/trust',
+            'saml20-idp-remote'
+        );
+        $this->assertNull($postMetadata);
     }
 
     /**

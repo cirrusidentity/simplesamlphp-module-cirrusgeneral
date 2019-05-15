@@ -40,9 +40,11 @@ class OverridingMetadataStrategy implements MetadataModifyStrategy
      */
     public function modifyMetadata($metadata, $entityId, $set)
     {
-        // TODO: Implement modifyMetadata() method.
+        if ($metadata == null) {
+            return $metadata;
+        }
         $overrides = $this->source->getMetaData($entityId, $set . '-override');
-        // TODO: remove operational attributes
+        // TODO: remove operational attributes ??
         if ($overrides) {
             return $overrides + $metadata;
         }

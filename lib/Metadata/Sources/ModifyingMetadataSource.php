@@ -49,6 +49,9 @@ class ModifyingMetadataSource extends \SimpleSAML_Metadata_MetaDataStorageSource
 
     public function modifyMetadata($metadata, $entityId, $set)
     {
+        if ($metadata === null) {
+            return $metadata;
+        }
         foreach ($this->strategies as $strategy) {
             $metadata = $strategy->modifyMetadata($metadata, $entityId, $set);
         }

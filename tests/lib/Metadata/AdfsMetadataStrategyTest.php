@@ -110,6 +110,17 @@ class AdfsMetadataStrategyTest extends TestCase
         $this->assertEquals($this->adfsMetadata, $postMetadata, 'The rest of the metadata is unaltered');
     }
 
+    public function testNullHandled()
+    {
+        $adfsStrategy = new AdfsMetadataStrategy();
+        $postMetadata = $adfsStrategy->modifyMetadata(
+            null,
+            'http://sts.example.edu/adfs/services/trust',
+            'saml20-idp-remote'
+        );
+        $this->assertNull($postMetadata);
+    }
+
     /**
      * @dataProvider noAdjustmentProvider
      * @param array $metadata The metadata to test
