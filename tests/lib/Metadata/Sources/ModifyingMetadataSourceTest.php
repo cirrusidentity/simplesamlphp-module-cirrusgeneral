@@ -45,6 +45,21 @@ class ModifyingMetadataSourceTest extends TestCase
         );
     }
 
+    public function testLoadSetViaHandler()
+    {
+        // Set the config to to use
+        \SimpleSAML_Configuration::loadFromArray($this->config, '[ARRAY]', 'simplesaml');
+        $handler = \SimpleSAML_Metadata_MetaDataStorageHandler::getMetadataHandler();
+        $metadataSet = $handler->getList('saml20-idp-remote');
+        $this->assertArrayHasKey('http://idp.example.edu/adfs/services/trust', $metadataSet);
+        $this->assertArrayHasKey('http://alt.example.edu/adfs/services/trust', $metadataSet);
+
+        $this->assertEquals(
+            'https://idp.example.eduadfs/ls/',
+            $metadataSet['http://idp.example.edu/adfs/services/trust']['SingleSignOnService'][0]['Location']
+        );
+    }
+
     public function testNotFoundMetadataViaHandler()
     {
         \SimpleSAML_Configuration::loadFromArray($this->config, '[ARRAY]', 'simplesaml');

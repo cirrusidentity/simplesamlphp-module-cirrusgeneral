@@ -35,6 +35,23 @@ class ModifyingMetadataSource extends \SimpleSAML_Metadata_MetaDataStorageSource
         $this->delegateSources = SimpleSAML_Metadata_MetaDataStorageSource::parseSources($config->getArray('sources'));
     }
 
+    public function getMetadataSet($set)
+    {
+        $result = array();
+
+        foreach ($this->delegateSources as $source) {
+            $srcList = $source->getMetadataSet($set);
+            /* $result is the last argument to array_merge because we want the content already
+             * in $result to have precedence.
+             */
+            $result = array_merge($srcList, $result);
+        }
+        //TODO: decide if a result set should have it's metadata modified
+        // or if doing that to an entire set would be too computationally expensive
+        return $result;
+    }
+
+
     public function getMetaData($index, $set)
     {
         $metadata = null;

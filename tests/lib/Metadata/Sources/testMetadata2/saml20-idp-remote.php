@@ -17,3 +17,24 @@ $metadata['http://idp.example.edu/adfs/services/trust'] = array(
                 ),
         ),
 );
+
+$metadata['http://alt.example.edu/adfs/services/trust'] = array(
+    'entityid' => 'http://alt.example.eduadfs/services/trust',
+    'metadata-set' => 'saml20-idp-remote',
+    'SingleSignOnService' =>
+        array(
+            0 =>
+                array(
+                    'Binding' => 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect',
+                    'Location' => 'https://alt.example.eduadfs/ls/',
+                ),
+        ),
+    'SingleLogoutService' =>
+        array(
+            0 =>
+                array(
+                    'Binding' => 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect',
+                    'Location' => 'https://alt.example.eduadfs/ls/',
+                ),
+        ),
+);
