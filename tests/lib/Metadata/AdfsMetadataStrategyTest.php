@@ -51,6 +51,7 @@ class AdfsMetadataStrategyTest extends TestCase
                     ),
             )
     ];
+
     private $adfsMetadata = [
         'entityid' => 'http://sts.example.edu/adfs/services/trust',
         'metadata-set' => 'saml20-idp-remote',
@@ -94,6 +95,42 @@ class AdfsMetadataStrategyTest extends TestCase
                     ),
             )
     ];
+    
+    private $azureMetadata = array (
+        'entityid' => 'https://sts.windows.net/ee4b037f-e626-495d-b017-0cc0f7dddb37/',
+        'metadata-set' => 'saml20-idp-remote',
+        'SingleSignOnService' =>
+            array (
+                0 =>
+                    array (
+                        'Binding' => 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect',
+                        'Location' => 'https://login.microsoftonline.com/ee4b037f-e626-495d-b017-0cc0f7dddb37/saml2',
+                    ),
+                1 =>
+                    array (
+                        'Binding' => 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST',
+                        'Location' => 'https://login.microsoftonline.com/ee4b037f-e626-495d-b017-0cc0f7dddb37/saml2',
+                    ),
+            ),
+        'SingleLogoutService' =>
+            array (
+                0 =>
+                    array (
+                        'Binding' => 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect',
+                        'Location' => 'https://login.microsoftonline.com/ee4b037f-e626-495d-b017-0cc0f7dddb37/saml2',
+                    ),
+            ),
+        'keys' =>
+            array (
+                0 =>
+                    array (
+                        'encryption' => false,
+                        'signing' => true,
+                        'type' => 'X509Certificate',
+                        'X509Certificate' => 'MIIC8DCCAdigAwIBAgIQTjJaoC31qZ1GjW3EWifPIDANBgkqhkiG9w0BAQsFADA0MTIwMAYDVQQDEylNaWNyb3NvZnQgQXp1cmUgRmVkZXJhdGVkIFNTTyBDZXJ0aWZpY2F0ZTAeFw0xOTA2MjYxNzAzNTJaFw0yMjA2MjYxNzAzNTJaMDQxMjAwBgNVBAMTKU1pY3Jvc29mdCBBenVyZSBGZWRlcmF0ZWQgU1NPIENlcnRpZmljYXRlMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAoYMvp6gnkXgxz+D3zQtxdSkQNzPM4JkzI2QsDW5rac91K/aNI0I9txp6NFJBDIHwGf44dFZrJBT9d3dV1GxPiOensksdWOD/4wNK2FEPsEszm14i/1wg9PCinytMCxfQMAcmnKwPF+K9V3XR2lzeoiqCzSYZE98F+7QX3UUjz8yg0BYXShKrIcaGnuG8D4QrfjfF27gqR6WyO3oyXxUml5rcE6tB1zK2j8S4zkfPTH8h580Q7AoyoqwU7eCeRR0goDTNzILsFmDDRL8vXIdmKTj71Z3smb4O1oONCE2eiWvw6Pr2eZwj0klWIeYIYSjFbZqzhT1fjKhbPPeSBJcxdwIDAQABMA0GCSqGSIb3DQEBCwUAA4IBAQAVB7BIhR27h9J6hGkAecoemnQEy3EHcI0EaX8OxJqQzVCvAf4TjRkVoPGPp7CQBzo6RVoL+SZ24OJkdaU34our9sC/5w7lZxn6P+qe/66PjhPWLBGxHQzGk8CYd0zHSb2MEugoqlq78rWQ1uDfFnA3e4WtfQ6WgqquVwEqVjKpopg7pbNX4mQObNrB/dL4C9rreBUwQ5hSKe3/IfbPfsqj3Fdy0WSoEkj7vebvCcHfQwAuwvpaoA8kWcjXh8nxiQrXbln/gzeohUS9gLWZQTMmo5HJngnr1hov37EN6zXEJ3LjZmX+BdKGVQLov5TDvE6Pqqd+/+fqSqUFG2PusCV6',
+                    ),
+            ),
+    );
 
 
     public function testAdfsHasAttributeAdjusted()
@@ -102,12 +139,26 @@ class AdfsMetadataStrategyTest extends TestCase
         $this->assertArrayNotHasKey('disable_scoping', $this->adfsMetadata);
         $postMetadata = $adfsStrategy->modifyMetadata(
             $this->adfsMetadata,
-            'http://sts.example.edu/adfs/services/trust',
+            $this->adfsMetadata['entityid'],
             'saml20-idp-remote'
         );
         $this->assertTrue($postMetadata['disable_scoping'], 'ADFS does not support scoping');
         unset($postMetadata['disable_scoping']);
         $this->assertEquals($this->adfsMetadata, $postMetadata, 'The rest of the metadata is unaltered');
+    }
+
+    public function testAzureHasAttributeAdjusted()
+    {
+        $adfsStrategy = new AdfsMetadataStrategy();
+        $this->assertArrayNotHasKey('disable_scoping', $this->azureMetadata);
+        $postMetadata = $adfsStrategy->modifyMetadata(
+            $this->azureMetadata,
+            $this->azureMetadata['entityid'],
+            'saml20-idp-remote'
+        );
+        $this->assertTrue($postMetadata['disable_scoping'], 'Azure AD is too strict on scoping, and can error');
+        unset($postMetadata['disable_scoping']);
+        $this->assertEquals($this->azureMetadata, $postMetadata, 'The rest of the metadata is unaltered');
     }
 
     public function testNullHandled()
