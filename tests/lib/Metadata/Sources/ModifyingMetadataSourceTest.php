@@ -3,6 +3,9 @@
 namespace SimpleSAML\Module\cirrusgeneral\Metadata\Sources;
 
 use PHPUnit\Framework\TestCase;
+use SimpleSAML\Configuration;
+use SimpleSAML\Error\MetadataNotFound;
+use SimpleSAML\Metadata\MetaDataStorageHandler;
 
 class ModifyingMetadataSourceTest extends TestCase
 {
@@ -29,8 +32,8 @@ class ModifyingMetadataSourceTest extends TestCase
     public function testModifyingMetadataSourceViaHandler()
     {
         // Set the config to to use
-        \SimpleSAML_Configuration::loadFromArray($this->config, '[ARRAY]', 'simplesaml');
-        $handler = \SimpleSAML_Metadata_MetaDataStorageHandler::getMetadataHandler();
+        Configuration::loadFromArray($this->config, '[ARRAY]', 'simplesaml');
+        $handler = MetaDataStorageHandler::getMetadataHandler();
         $metadata = $handler->getMetaData(
             'http://idp.example.edu/adfs/services/trust',
             'saml20-idp-remote'
@@ -48,8 +51,8 @@ class ModifyingMetadataSourceTest extends TestCase
     public function testLoadSetViaHandler()
     {
         // Set the config to to use
-        \SimpleSAML_Configuration::loadFromArray($this->config, '[ARRAY]', 'simplesaml');
-        $handler = \SimpleSAML_Metadata_MetaDataStorageHandler::getMetadataHandler();
+        Configuration::loadFromArray($this->config, '[ARRAY]', 'simplesaml');
+        $handler = MetaDataStorageHandler::getMetadataHandler();
         $metadataSet = $handler->getList('saml20-idp-remote');
         $this->assertArrayHasKey('http://idp.example.edu/adfs/services/trust', $metadataSet);
         $this->assertArrayHasKey('http://alt.example.edu/adfs/services/trust', $metadataSet);
@@ -62,9 +65,9 @@ class ModifyingMetadataSourceTest extends TestCase
 
     public function testNotFoundMetadataViaHandler()
     {
-        \SimpleSAML_Configuration::loadFromArray($this->config, '[ARRAY]', 'simplesaml');
-        $handler = \SimpleSAML_Metadata_MetaDataStorageHandler::getMetadataHandler();
-        $this->expectException(\SimpleSAML_Error_MetadataNotFound::class);
+        Configuration::loadFromArray($this->config, '[ARRAY]', 'simplesaml');
+        $handler = MetaDataStorageHandler::getMetadataHandler();
+        $this->expectException(MetadataNotFound::class);
         $handler->getMetaData(
             'http://no-such-entry',
             'saml20-idp-remote'

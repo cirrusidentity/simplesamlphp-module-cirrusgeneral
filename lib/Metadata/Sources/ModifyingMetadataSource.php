@@ -2,15 +2,16 @@
 
 namespace SimpleSAML\Module\cirrusgeneral\Metadata\Sources;
 
+use SimpleSAML\Configuration;
 use SimpleSAML\Error\CriticalConfigurationError;
+use SimpleSAML\Metadata\MetaDataStorageSource;
 use SimpleSAML\Module;
 use SimpleSAML\Module\cirrusgeneral\Metadata\MetadataModifyStrategy;
-use SimpleSAML_Metadata_MetaDataStorageSource;
 
 /**
  * Metadata source that can delegate to other sources and then adjust the loaded metadata
  */
-class ModifyingMetadataSource extends \SimpleSAML_Metadata_MetaDataStorageSource
+class ModifyingMetadataSource extends MetaDataStorageSource
 {
     /**
      * The list of strategies to run to adjust the metadata
@@ -20,19 +21,19 @@ class ModifyingMetadataSource extends \SimpleSAML_Metadata_MetaDataStorageSource
 
     /**
      * Sources to delegate to for loading
-     * @var SimpleSAML_Metadata_MetaDataStorageSource[]
+     * @var MetaDataStorageSource[]
      */
     private $delegateSources = [];
 
     public function __construct(array $sourceConfig)
     {
         assert(is_array($sourceConfig));
-        $config = \SimpleSAML_Configuration::loadFromArray($sourceConfig);
+        $config = Configuration::loadFromArray($sourceConfig);
         foreach ($config->getArray('strategies') as $strategyConfig) {
             $this->strategies[] = $this->resolveStrategy($strategyConfig);
         }
 
-        $this->delegateSources = SimpleSAML_Metadata_MetaDataStorageSource::parseSources($config->getArray('sources'));
+        $this->delegateSources = MetaDataStorageSource::parseSources($config->getArray('sources'));
     }
 
     public function getMetadataSet($set)

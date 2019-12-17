@@ -2,6 +2,8 @@
 
 namespace SimpleSAML\Module\cirrusgeneral\Auth\Process;
 
+use SimpleSAML\Auth\ProcessingFilter;
+use SimpleSAML\Configuration;
 use SimpleSAML\Logger;
 
 /**
@@ -9,7 +11,7 @@ use SimpleSAML\Logger;
  * Conditionaly set the authn context based on other attributes.
  * @package SimpleSAML\Module\cirrusgeneral\Auth\Process
  */
-class ConditionalSetAuthnContext extends \SimpleSAML_Auth_ProcessingFilter
+class ConditionalSetAuthnContext extends ProcessingFilter
 {
 
     /**
@@ -35,7 +37,7 @@ class ConditionalSetAuthnContext extends \SimpleSAML_Auth_ProcessingFilter
     public function __construct(&$config, $reserved)
     {
         parent::__construct($config, $reserved);
-        $config = \SimpleSAML_Configuration::loadFromArray($config);
+        $config = Configuration::loadFromArray($config);
         $this->path = $config->getArrayizeString('path', ',');
         $this->value = $config->getValue('value');
         $this->contextToAssert = $config->getString('contextToAssert');

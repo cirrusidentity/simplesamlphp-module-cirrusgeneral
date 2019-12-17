@@ -2,6 +2,8 @@
 
 namespace SimpleSAML\Module\cirrusgeneral\Auth\Process;
 
+use SimpleSAML\Auth\ProcessingFilter;
+use SimpleSAML\Configuration;
 use SimpleSAML\Logger;
 
 /**
@@ -10,7 +12,7 @@ use SimpleSAML\Logger;
  * Class AttributeSplitter
  * @package SimpleSAML\Module\cirrusgeneral\Auth\Process
  */
-class AttributeSplitter extends \SimpleSAML_Auth_ProcessingFilter
+class AttributeSplitter extends ProcessingFilter
 {
 
     /**
@@ -28,7 +30,7 @@ class AttributeSplitter extends \SimpleSAML_Auth_ProcessingFilter
     public function __construct(&$config, $reserved)
     {
         parent::__construct($config, $reserved);
-        $config = \SimpleSAML_Configuration::loadFromArray($config);
+        $config = Configuration::loadFromArray($config);
         $this->delimiter = $config->getString('delimiter', ',');
         $this->attributes = $config->getArrayizeString('attributes');
     }

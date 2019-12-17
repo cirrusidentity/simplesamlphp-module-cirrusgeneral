@@ -2,6 +2,8 @@
 
 namespace SimpleSAML\Module\cirrusgeneral\Auth\Process;
 
+use SimpleSAML\Auth\ProcessingFilter;
+use SimpleSAML\Configuration;
 use SimpleSAML\Module\cirrusgeneral\Utils\AttributeUtils;
 
 /**
@@ -11,7 +13,7 @@ use SimpleSAML\Module\cirrusgeneral\Utils\AttributeUtils;
  * attributes, while also adjusting the values to match urn or other style values
  * @package SimpleSAML\Module\cirrusgeneral\Auth\Process
  */
-class AttributeValueMapper extends \SimpleSAML_Auth_ProcessingFilter
+class AttributeValueMapper extends ProcessingFilter
 {
     /**
      * The csv to use in mapping
@@ -31,7 +33,7 @@ class AttributeValueMapper extends \SimpleSAML_Auth_ProcessingFilter
     public function __construct(&$config, $reserved)
     {
         parent::__construct($config, $reserved);
-        $config = \SimpleSAML_Configuration::loadFromArray($config);
+        $config = Configuration::loadFromArray($config);
         $this->fileName = $config->getString('csvFile', null);
         $this->mappingLookup = $config->getArray('mappingLookup', []);
     }

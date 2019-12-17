@@ -8,8 +8,8 @@
 
 namespace SimpleSAML\Module\cirrusgeneral\Metadata;
 
+use SimpleSAML\Metadata\MetaDataStorageSource;
 use SimpleSAML\Module\cirrusgeneral\Metadata\Sources\ModifyingMetadataSource;
-use SimpleSAML_Metadata_MetaDataStorageSource;
 
 /**
  * Loads additional metadata from an override set and combines it with
@@ -18,7 +18,7 @@ use SimpleSAML_Metadata_MetaDataStorageSource;
 class OverridingMetadataStrategy implements MetadataModifyStrategy
 {
     /**
-     * @var SimpleSAML_Metadata_MetaDataStorageSource
+     * @var MetaDataStorageSource
      */
     private $source;
 
