@@ -2,10 +2,12 @@
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
+- [Installation](#installation)
 - [ModifyingMetadataSource](#modifyingmetadatasource)
   - [Strategies](#strategies)
     - [AdfsMetadataStrategy](#adfsmetadatastrategy)
     - [OverridingMetadataStrategy](#overridingmetadatastrategy)
+    - [PhpMetadtaStrategy](#phpmetadtastrategy)
 - [AttributeSplitter](#attributesplitter)
 - [AttributeValueMapper](#attributevaluemapper)
   - [CSV file format](#csv-file-format)
