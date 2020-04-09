@@ -23,6 +23,14 @@ class ModifyingMetadataSourceTest extends TestCase
                     [
                         'type' => 'SimpleSAML\Module\cirrusgeneral\Metadata\OverridingMetadataStrategy',
                         'source' => array('type' => 'flatfile', 'directory' => __DIR__ . '/overrideMetadata'),
+                    ],
+                    [
+                        'type' => 'SimpleSAML\Module\cirrusgeneral\Metadata\PhpMetadataStrategy',
+                        'code' => '
+                             if ($set === "saml20-sp-remote") {
+                                $metadata["attributes"] = $metadata["attributes"] ?? ["attr1", "attr2"];
+                             } 
+                        '
                     ]
                 ],
             ]

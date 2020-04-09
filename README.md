@@ -36,7 +36,16 @@ edits the metadata before returning it.
                     [
                         'type' => 'SimpleSAML\Module\cirrusgeneral\Metadata\OverridingMetadataStrategy',
                         'source' => array('type' => 'flatfile', 'directory' => __DIR__ . '/overrideMetadata'),
-                    ]
+                    ],
+                    [
+                        'type' => 'SimpleSAML\Module\cirrusgeneral\Metadata\PhpMetadataStrategy',
+                        // Run php code to edit the metadat. Defined variables are $metadata, $set, and $entityId
+                        'code' => '
+                             if ($set === "saml20-sp-remote") {
+                                $metadata["attributes"] = $metadata["attributes"] ?? ["attr1", "attr2"];
+                             } 
+                        '
+                    ]                    
                     // some other strategy
                     // ['type' => 'Myclass', 'configOption1' => true],
                 ],
@@ -57,6 +66,14 @@ Load additonal metadata from a source and combine it with the main metadata usin
 A `flatfile` override strategy for `saml-sp-remote` would look in the file `saml-sp-remote-override.php`
 and then return the metadata as `$overrideMetadata + $unalteredMetadata` which will keep
 keys from the override metadata if the same key exists in the regular metadata.
+
+### PhpMetadtaStrategy
+
+This strategy allows you to run php code snippets to adjust metadata. Your code will have 3 variables available:
+ array $metadata, string $set, and string $entityId.  $metadata will contain the current metadata for the entity and your code can
+make changes to this array.
+
+If you have complex code logic you are better off creating your own strategy with unit tests.
 
 # AttributeSplitter
 
