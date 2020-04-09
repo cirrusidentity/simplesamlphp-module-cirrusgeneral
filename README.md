@@ -14,6 +14,10 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
+# Installation
+
+    composer require cirrusidentity/simplesamlphp-module-cirrusgeneral
+
 # ModifyingMetadataSource
 
 There is often a need to adjust the metadata for an entityId to fix certain values, or to add
