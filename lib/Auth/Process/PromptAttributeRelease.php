@@ -93,7 +93,7 @@ class PromptAttributeRelease extends ProcessingFilter
         return $t;
     }
 
-    public static function handleRequest(Request $request = null) : Response
+    public static function handleRequest(Request $request = null) : Template
     {
         if ($request === null) {
             $request = Request::createFromGlobals();
