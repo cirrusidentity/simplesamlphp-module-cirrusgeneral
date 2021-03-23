@@ -91,6 +91,7 @@ class PromptAttributeReleaseTest extends TestCase
         $stateId = null;
         try {
             $filter->process($this->state);
+            $this->fail('Redirect exception expected');
         } catch (RedirectException $e) {
             $this->assertEquals('redirectTrustedURL', $e->getMessage());
             $this->assertEquals(
@@ -210,6 +211,7 @@ class PromptAttributeReleaseTest extends TestCase
         // On successful processing of the submission the rest of authprocs run and user is redirect
         try {
             PromptAttributeRelease::handleRequest($request);
+            $this->fail('Redirect exception expected');
         } catch (RedirectException $e) {
             $this->assertEquals('redirectTrustedURL', $e->getMessage());
             $this->assertEquals('test_finished_authprocs', $e->getUrl(),);
