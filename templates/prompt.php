@@ -6,11 +6,12 @@ $this->includeAtTemplateBase('includes/header.php');
 $attributeName = $this->data['attributeName'];
 $defaultHeader = $this->t('{cirrusgeneral:prompt:header_attribute_default}');
 $defaultText = $this->t('{cirrusgeneral:prompt:text_attribute_single}');
-
-$promptHeader = $this->t("{cirrusgeneral:prompt:header_attribute_$attributeName}") ?? $defaultHeader;
-$promptText = $this->t("{cirrusgeneral:prompt:text_attribute_$attributeName}") ?? $defaultText
+$headerTag="{cirrusgeneral:prompt:header_attribute_$attributeName}";
+$textTag="{cirrusgeneral:prompt:text_attribute_$attributeName}";
+$promptHeader = is_null($this->getTag($headerTag)) ? $defaultHeader : $this->t($headerTag);
+$promptText = is_null($this->getTag($textTag)) ? $defaultText : $this->t($textTag);
 ?>
-    <div class="container">
+    <div class="calinks-login-buttons">
         <h2><?php echo htmlspecialchars($promptHeader); ?></h2>
         <p><?php echo htmlspecialchars($promptText); ?></p>
         <?php
@@ -22,7 +23,6 @@ $promptText = $this->t("{cirrusgeneral:prompt:text_attribute_$attributeName}") ?
             <?php
         }
         ?>
-        <ul class="list-group">
             <?php
             foreach ($this->data['attributeValues'] as $value) {
                 $label = $value;
@@ -32,11 +32,10 @@ $promptText = $this->t("{cirrusgeneral:prompt:text_attribute_$attributeName}") ?
                 $label = htmlspecialchars($label);
                 $url = HTTP::addURLParameters(HTTP::getSelfURL(), ['name' => $attributeName, 'value' => $value]);
                 ?>
-                <li class="list-group-item"><a href="<?php echo $url; ?>"><?php echo $label; ?></a></li>
+                <a class="calinks-button btn btn-default btn-lg btn-block" href="<?php echo $url; ?>"><?php echo $label; ?></a>
                 <?php
             }
             ?>
-        </ul>
     </div>
 
 <?php
