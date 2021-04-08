@@ -1,5 +1,5 @@
 <?php
 
 $config = [
-  'key' => 'need a value to make tests happy'
+    'store.type' => '\CirrusIdentity\SSP\Test\InMemoryStore',
 ];
