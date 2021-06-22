@@ -217,16 +217,16 @@
         },
         {
             "name": "phpmailer/phpmailer",
-            "version": "v6.4.0",
+            "version": "v6.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHPMailer/PHPMailer.git",
-                "reference": "050d430203105c27c30efd1dce7aa421ad882d01"
+                "reference": "a5b5c43e50b7fba655f793ad27303cd74c57363c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHPMailer/PHPMailer/zipball/050d430203105c27c30efd1dce7aa421ad882d01",
-                "reference": "050d430203105c27c30efd1dce7aa421ad882d01",
+                "url": "https://api.github.com/repos/PHPMailer/PHPMailer/zipball/a5b5c43e50b7fba655f793ad27303cd74c57363c",
+                "reference": "a5b5c43e50b7fba655f793ad27303cd74c57363c",
                 "shasum": ""
             },
             "require": {
@@ -285,7 +285,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2021-03-31T20:06:42+00:00"
+            "time": "2021-06-16T14:33:43+00:00"
         },
         {
             "name": "psr/container",
@@ -4025,7 +4025,7 @@
             "keywords": [
                 "simplesamlphp"
             ],
-            "time": "2019-12-17T07:21:20+00:00"
+            "time": "2020-02-16T07:22:43+00:00"
         },
         {
             "name": "codeception/aspect-mock",
