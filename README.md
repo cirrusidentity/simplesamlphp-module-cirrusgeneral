@@ -69,7 +69,7 @@ Add `disable_scoping` to any metadata that looks like ADFS
 ### OverridingMetadataStrategy
 
 Load additonal metadata from a source and combine it with the main metadata using +.
-A `flatfile` override strategy for `saml-sp-remote` would look in the file `saml-sp-remote-override.php`
+A `flatfile` override strategy for `saml20-sp-remote` would look in the file `saml20-sp-remote-override.php`
 and then return the metadata as `$overrideMetadata + $unalteredMetadata` which will keep
 keys from the override metadata if the same key exists in the regular metadata.
 
