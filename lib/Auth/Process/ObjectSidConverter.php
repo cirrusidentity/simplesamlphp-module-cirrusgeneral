@@ -4,7 +4,6 @@ namespace SimpleSAML\Module\cirrusgeneral\Auth\Process;
 
 use SimpleSAML\Auth\ProcessingFilter;
 use SimpleSAML\Configuration;
-use SimpleSAML\Logger;
 
 /**
  * ActiveDirectory's objectSid can be a in a binary format or as a formatted string.
@@ -17,17 +16,17 @@ class ObjectSidConverter extends ProcessingFilter
     /**
      * @var string The attribute to convert from
      */
-   private string $source;
+    private string $source;
 
     /**
      * @var string Destination to store after the conversion.
      */
-   private string $destination;
+    private string $destination;
 
     /**
      * @var bool convert formatted SID or base64 binary value
      */
-   private bool $toFormattedSid = false;
+    private bool $toFormattedSid = false;
 
 
     public function __construct(&$config, $reserved)
@@ -101,7 +100,7 @@ class ObjectSidConverter extends ProcessingFilter
         }
 
         return 'S-' . $revisionLevel . '-' . $identifierAuthority . implode(
-                preg_filter('/^/', '-', $subAuthorities)
-            );
+            preg_filter('/^/', '-', $subAuthorities)
+        );
     }
 }

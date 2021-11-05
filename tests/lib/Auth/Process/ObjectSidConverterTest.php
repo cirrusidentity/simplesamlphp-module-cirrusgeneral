@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Test\SimpleSAML\Auth\Process;
-
 
 use PHPUnit\Framework\TestCase;
 use SimpleSAML\Module\cirrusgeneral\Auth\Process\ObjectSidConverter;
@@ -78,5 +76,4 @@ class ObjectSidConverterTest extends TestCase
         $filter->process($state);
         $this->assertEquals($expectedState, $state);
     }
-
 }

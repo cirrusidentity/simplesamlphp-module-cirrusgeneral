@@ -10,7 +10,7 @@ class AttributeUtils
      * @param array $attributeArrays Each element is an array of attributes
      * @return array The resulting merged and unique array
      */
-    public function mergeAndUniquify(array $attributeArrays) : array
+    public function mergeAndUniquify(array $attributeArrays): array
     {
         if (empty($attributeArrays)) {
             return [];

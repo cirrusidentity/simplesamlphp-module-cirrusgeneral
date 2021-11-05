@@ -1,10 +1,12 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: patrick
  * Date: 9/27/18
  * Time: 4:49 PM
  */
+
 namespace Test\SimpleSAML\Auth\Process;
 
 use PHPUnit\Framework\TestCase;

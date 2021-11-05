@@ -10,7 +10,6 @@ use PHPUnit\Framework\TestCase;
 use SimpleSAML\Auth\ProcessingChain;
 use SimpleSAML\Auth\State;
 use SimpleSAML\Error\NoState;
-use SimpleSAML\Module\authoauth2\Auth\Source\OAuth2;
 use SimpleSAML\Module\cirrusgeneral\Auth\Process\PromptAttributeRelease;
 use SimpleSAML\XHTML\Template;
 use Symfony\Component\HttpFoundation\Request;
@@ -145,7 +144,6 @@ class PromptAttributeReleaseTest extends TestCase
             'val3' => 'ValueB'
         ], $data['attributeLabels']);
         $this->assertArrayNotHasKey('errorMessage', $data);
-
     }
 
     public function invalidSubmitProvider(): array
@@ -214,7 +212,7 @@ class PromptAttributeReleaseTest extends TestCase
             $this->fail('Redirect exception expected');
         } catch (RedirectException $e) {
             $this->assertEquals('redirectTrustedURL', $e->getMessage());
-            $this->assertEquals('test_finished_authprocs', $e->getUrl(),);
+            $this->assertEquals('test_finished_authprocs', $e->getUrl());
         }
         $storedState = State::loadState($stateId, ProcessingChain::COMPLETED_STAGE);
         $this->assertEquals(['val2'], $storedState['Attributes']['someAttribute']);

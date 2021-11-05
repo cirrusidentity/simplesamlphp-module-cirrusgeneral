@@ -95,7 +95,7 @@ class AdfsMetadataStrategyTest extends TestCase
                     ),
             )
     ];
-    
+
     private $azureMetadata = array (
         'entityid' => 'https://sts.windows.net/ee4b037f-e626-495d-b017-0cc0f7dddb37/',
         'metadata-set' => 'saml20-idp-remote',
