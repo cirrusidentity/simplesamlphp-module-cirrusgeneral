@@ -12,6 +12,8 @@
 - [AttributeValueMapper](#attributevaluemapper)
   - [CSV file format](#csv-file-format)
 - [ConditionalSetAuthnContext](#conditionalsetauthncontext)
+- [AttributeRemove](#attributeremove)
+- [ObjectSidConverter](#objectsidconverter)
 - [Development](#development)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
@@ -166,11 +168,30 @@ Usage:
 
 ```
 
+# AttributeRemove
+
+This AuthProc filter allows you to define attributes that should always be removed. We use it with
+AzureAD since it always returns certain extra attributes (such as tenantId )that we want removed from the
+users attributes.
+
+Usage:
+```php
+// In your authProc config
+    20 => [
+        'class' => 'cirrusgeneral:AttributeRemove',
+        'attributes' => ['http://schemas.microsoft.com/identity/claims/tenantid', 'http://schemas.microsoft.com/identity/claims/objectidentifier'],
+    ]
+```
+
+# ObjectSidConverter
+
+ActiveDirectory's objectSid can be a in a binary format or as a formatted string. Sometimes you'll receive one and expect the other.
+
 # Development
 
 Run `phpcs` to check code style
 
-    ./vendor/bin/phpcs --standard=PSR2 lib/ tests/
+    ./vendor/bin/phpcs
 
 Run `phpunit` to test
 
@@ -178,4 +199,4 @@ Run `phpunit` to test
 
 You can auto correct some findings from phpcs. It is recommended you do this after stage your changes (or maybe even commit) since there is a non-trivial chance it will just mess up your code.
 
-    ./vendor/bin/phpcbf --ignore=somefile.php --standard=PSR2 lib/ tests/
+    ./vendor/bin/phpcbf
