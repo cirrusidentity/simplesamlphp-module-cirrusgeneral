@@ -180,6 +180,7 @@ Usage:
     20 => [
         'class' => 'cirrusgeneral:AttributeRemove',
         'attributes' => ['http://schemas.microsoft.com/identity/claims/tenantid', 'http://schemas.microsoft.com/identity/claims/objectidentifier'],
+        'attributeRegexes' => ['/^operational/']
     ]
 ```
 

@@ -22,11 +22,18 @@ class AttributeRemove extends ProcessingFilter
      */
     private array $attributes;
 
+    /**
+     * The regex patterns of attributes to remove
+     * @var string[]
+     */
+    private array $attributeRegexes;
+
     public function __construct(&$config, $reserved)
     {
         parent::__construct($config, $reserved);
         $config = Configuration::loadFromArray($config);
-        $this->attributes = $config->getArrayizeString('attributes');
+        $this->attributes = $config->getArrayizeString('attributes', []);
+        $this->attributeRegexes = $config->getArrayizeString('attributeRegexes', []);
     }
 
     /**
@@ -35,5 +42,16 @@ class AttributeRemove extends ProcessingFilter
     public function process(&$request)
     {
         $request['Attributes'] = array_diff_key($request['Attributes'], array_flip($this->attributes));
+
+        foreach ($this->attributeRegexes as $regex) {
+            foreach ($request['Attributes'] as $attributeName => $values) {
+                $result = @preg_match($regex, $attributeName);
+                if ($result === 1) {
+                    unset($request['Attributes'][$attributeName]);
+                } elseif ($result === false) {
+                    Logger::WARNING("AttributeRemove: invalid regex '$regex' " . preg_last_error_msg());
+                }
+            }
+        }
     }
 }

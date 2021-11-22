@@ -11,7 +11,9 @@ class AttributeRemoveTest extends TestCase
         'A' => 'B',
         'Attributes' => [
             'attr1' => ['val1', 'val2'],
-            'attr2' => ['val3']
+            'attr2' => ['val3'],
+            'prefix.attr' => ['val4'],
+            'prefix.attr2' => ['val5']
         ]
     ];
     public function setup()
@@ -47,7 +49,7 @@ class AttributeRemoveTest extends TestCase
     {
 
         $config = [
-            'attributes' => ['attr1', 'attr2']
+            'attributes' => ['attr1', 'attr2', 'prefix.attr', 'prefix.attr2']
         ];
         $state = $this->initialState;
         $filter = new AttributeRemove($config, null);
@@ -64,7 +66,24 @@ class AttributeRemoveTest extends TestCase
         $state = $this->initialState;
         $filter = new AttributeRemove($config, null);
         $filter->process($state);
-        $this->assertEquals(['attr1' => ['val1', 'val2']], $state['Attributes']);
+        $this->assertEquals(['val1', 'val2'], $state['Attributes']['attr1']);
+        $this->assertArrayNotHasKey('attr2', $state['Attributes']);
     }
 
+    public function testRemoveByRegex()
+    {
+        $config = [
+            'attributeRegexes' => ['/^prefix\./', 'bad-regex-does-nothing']
+        ];
+        $state = $this->initialState;
+        $filter = new AttributeRemove($config, null);
+        $filter->process($state);
+        $this->assertEquals(
+            [
+                'attr1' => ['val1', 'val2'],
+                'attr2' => ['val3'],
+            ],
+            $state['Attributes']
+        );
+    }
 }
