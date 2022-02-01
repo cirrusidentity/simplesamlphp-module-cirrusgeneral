@@ -107,7 +107,8 @@ class PromptAttributeReleaseTest extends TestCase
             'attributeLabels' => [
                 'val1' => 'Value',
                 'val3' => 'ValueB'
-            ]
+            ],
+            'displayAttributeValue' => true
         ];
         $storedState = State::loadState($stateId, PromptAttributeRelease::$STATE_STAGE);
         $this->assertEquals($expectedPromptState, $storedState['cirrusgeneral:prompt']);
@@ -121,6 +122,7 @@ class PromptAttributeReleaseTest extends TestCase
             'GET',
             ['StateId' => 'myStateId']
         );
+        
         PromptAttributeRelease::handleRequest($request);
     }
 
@@ -133,6 +135,7 @@ class PromptAttributeReleaseTest extends TestCase
             'GET',
             ['StateId' => $stateId]
         );
+
         $response = PromptAttributeRelease::handleRequest($request);
         $this->assertInstanceOf(Template::class, $response);
 
@@ -227,7 +230,8 @@ class PromptAttributeReleaseTest extends TestCase
                 'attributeLabels' => [
                     'val1' => 'Value',
                     'val3' => 'ValueB'
-                ]
+                ],
+                'displayAttributeValue' => true
             ],
             'Attributes' => [
                 'someAttribute' => ['val1', 'val2', 'val3']
