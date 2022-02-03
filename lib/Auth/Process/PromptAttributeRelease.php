@@ -26,6 +26,7 @@ class PromptAttributeRelease extends ProcessingFilter
     public static string $STATE_STAGE = 'prompt:request';
 
     private string $attributeName;
+    private bool $displayAttributeValue;
     private array $labels;
 
     public function __construct(&$config, $reserved)
@@ -33,6 +34,7 @@ class PromptAttributeRelease extends ProcessingFilter
         parent::__construct($config, $reserved);
         $config = Configuration::loadFromArray($config);
         $this->attributeName = $config->getString('attribute');
+        $this->displayAttributeValue = $config->getBoolean('displayAttributeValue', true);
         $this->labels = $config->getArray('labels', []);
     }
 
@@ -53,6 +55,7 @@ class PromptAttributeRelease extends ProcessingFilter
             'attributeName' => $this->attributeName,
             'values' => $attributes[$this->attributeName],
             'attributeLabels' => $this->labels,
+            'displayAttributeValue' => $this->displayAttributeValue,
         ];
         $state['cirrusgeneral:prompt'] = $promptState;
 
@@ -87,6 +90,7 @@ class PromptAttributeRelease extends ProcessingFilter
         $t->data['attributeName'] = $state['cirrusgeneral:prompt']['attributeName'];
         $t->data['attributeValues'] = $state['cirrusgeneral:prompt']['values'];
         $t->data['attributeLabels'] = $state['cirrusgeneral:prompt']['attributeLabels'];
+        $t->data['displayAttributeValue'] = $state['cirrusgeneral:prompt']['displayAttributeValue'];
         if ($errorMessage) {
             $t->data['errorMessage'] = $errorMessage;
         }

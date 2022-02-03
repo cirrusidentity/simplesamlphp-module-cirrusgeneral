@@ -11,6 +11,7 @@
 - [AttributeSplitter](#attributesplitter)
 - [AttributeValueMapper](#attributevaluemapper)
   - [CSV file format](#csv-file-format)
+- [PromptAttributeRelease](#promptattributerelease)
 - [ConditionalSetAuthnContext](#conditionalsetauthncontext)
 - [AttributeRemove](#attributeremove)
 - [ObjectSidConverter](#objectsidconverter)
@@ -148,6 +149,28 @@ group-med,newStudent,entitlement,urn:med:student-app
 group-med,faculty,entitlement,urn:med:faculty-app
 ```
 
+# PromptAttributeRelease
+
+If a user has a multi-valued attribute and the SP can only use/expects one value, then the `PromptAttributeRelease`
+filter can prompt the user to pick which value should be released to the SP.
+An example, an SP has different functionality depending on the `eduPersonAffiliation` value. This filter
+would allow user to select which of their affiliations to release.
+
+```php
+// In your authProc config
+    20 => [
+        'class' => 'cirrusgeneral:PromptAttributeRelease',
+         'attribute' => 'eduPersonAffiliation',
+         // optional labels to prefix in front of values
+         'labels' => [
+             'student' => 'Student Role',
+             'member'  => 'Generic Role'
+             // any other values don't get a label and are shown as the plain value in the UI
+         ]
+         // optional: should the attribute value be shown after the label? defaults to true
+         'displayAttributeValue' => false
+```
+
 # ConditionalSetAuthnContext
 
 This AuthProc filter allows you to assert a specific `authnContextClassRef` if value in
@@ -157,7 +180,7 @@ you to assert `https://refeds.org/profile/mfa` if that attribute is present.
 
 Usage:
 ```php
-// In your authProc config
+// In your authProc config of your IdP
     20 => [
         'class' => 'cirrusgeneral:ConditionalSetAuthnContext',
         'path' => ['Attributes', 'mfaActivated'], // The path of keys to traverse in the request state,
@@ -166,6 +189,21 @@ Usage:
         'ignoreForEntities' => ['match1', 'match2', 'other']
     ]
 
+// Example for Okta
+      25 => array(
+                    'class' => 'cirrusgeneral:ConditionalSetAuthnContext',
+                    'path' => ['Attributes', 'session.amr'],
+                    'value' => 'mfa',
+                    'contextToAssert' => 'https://refeds.org/profile/mfa',
+                ),
+
+// Exmample for Aure AD
+      49 => array(
+                    'class' => 'cirrusgeneral:ConditionalSetAuthnContext',
+                    'path' => ['Attributes', 'http://schemas.microsoft.com/claims/authnmethodsreferences'],
+                    'value' => 'http://schemas.microsoft.com/claims/multipleauthn',
+                    'contextToAssert' => 'https://refeds.org/profile/mfa',
+                ),
 ```
 
 # AttributeRemove

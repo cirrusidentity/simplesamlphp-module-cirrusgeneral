@@ -27,7 +27,10 @@ $promptText = is_null($this->getTag($textTag)) ? $defaultText : $this->t($textTa
             foreach ($this->data['attributeValues'] as $value) {
                 $label = $value;
                 if (array_key_exists($value, $this->data['attributeLabels'])) {
-                    $label = $this->data['attributeLabels'][$value] . ' ' . $value;
+                    $label = $this->data['displayAttributeValue'] ?
+                        $this->data['attributeLabels'][$value] . ' ' . $value
+                        :
+                        $this->data['attributeLabels'][$value];
                 }
                 $label = htmlspecialchars($label);
                 $url = HTTP::addURLParameters(HTTP::getSelfURL(), ['name' => $attributeName, 'value' => $value]);
