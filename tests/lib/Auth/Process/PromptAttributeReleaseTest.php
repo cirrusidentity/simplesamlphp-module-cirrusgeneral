@@ -122,7 +122,7 @@ class PromptAttributeReleaseTest extends TestCase
             'GET',
             ['StateId' => 'myStateId']
         );
-        
+
         PromptAttributeRelease::handleRequest($request);
     }
 

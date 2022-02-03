@@ -127,6 +127,7 @@ class AdfsMetadataStrategyTest extends TestCase
                         'encryption' => false,
                         'signing' => true,
                         'type' => 'X509Certificate',
+                        // phpcs:ignore
                         'X509Certificate' => 'MIIC8DCCAdigAwIBAgIQTjJaoC31qZ1GjW3EWifPIDANBgkqhkiG9w0BAQsFADA0MTIwMAYDVQQDEylNaWNyb3NvZnQgQXp1cmUgRmVkZXJhdGVkIFNTTyBDZXJ0aWZpY2F0ZTAeFw0xOTA2MjYxNzAzNTJaFw0yMjA2MjYxNzAzNTJaMDQxMjAwBgNVBAMTKU1pY3Jvc29mdCBBenVyZSBGZWRlcmF0ZWQgU1NPIENlcnRpZmljYXRlMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAoYMvp6gnkXgxz+D3zQtxdSkQNzPM4JkzI2QsDW5rac91K/aNI0I9txp6NFJBDIHwGf44dFZrJBT9d3dV1GxPiOensksdWOD/4wNK2FEPsEszm14i/1wg9PCinytMCxfQMAcmnKwPF+K9V3XR2lzeoiqCzSYZE98F+7QX3UUjz8yg0BYXShKrIcaGnuG8D4QrfjfF27gqR6WyO3oyXxUml5rcE6tB1zK2j8S4zkfPTH8h580Q7AoyoqwU7eCeRR0goDTNzILsFmDDRL8vXIdmKTj71Z3smb4O1oONCE2eiWvw6Pr2eZwj0klWIeYIYSjFbZqzhT1fjKhbPPeSBJcxdwIDAQABMA0GCSqGSIb3DQEBCwUAA4IBAQAVB7BIhR27h9J6hGkAecoemnQEy3EHcI0EaX8OxJqQzVCvAf4TjRkVoPGPp7CQBzo6RVoL+SZ24OJkdaU34our9sC/5w7lZxn6P+qe/66PjhPWLBGxHQzGk8CYd0zHSb2MEugoqlq78rWQ1uDfFnA3e4WtfQ6WgqquVwEqVjKpopg7pbNX4mQObNrB/dL4C9rreBUwQ5hSKe3/IfbPfsqj3Fdy0WSoEkj7vebvCcHfQwAuwvpaoA8kWcjXh8nxiQrXbln/gzeohUS9gLWZQTMmo5HJngnr1hov37EN6zXEJ3LjZmX+BdKGVQLov5TDvE6Pqqd+/+fqSqUFG2PusCV6',
                     ),
             ),
