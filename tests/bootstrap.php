@@ -2,6 +2,7 @@
 
 $projectRoot = dirname(__DIR__);
 require_once($projectRoot . '/vendor/autoload.php');
+putenv('SIMPLESAMLPHP_CONFIG_DIR=' . __DIR__ . '/config');
 
 new \SimpleSAML\Error\ConfigurationError('Load to prevent some exception class resolution issues with aspectMock');
 

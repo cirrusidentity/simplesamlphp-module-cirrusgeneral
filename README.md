@@ -15,6 +15,8 @@
 - [ConditionalSetAuthnContext](#conditionalsetauthncontext)
 - [AttributeRemove](#attributeremove)
 - [ObjectSidConverter](#objectsidconverter)
+- [Conditional AuthProc Insertion](#conditional-authproc-insertion)
+  - [PhpConditionalAuthProcInserter](#phpconditionalauthprocinserter)
 - [Development](#development)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
@@ -225,6 +227,51 @@ Usage:
 # ObjectSidConverter
 
 ActiveDirectory's objectSid can be a in a binary format or as a formatted string. Sometimes you'll receive one and expect the other.
+
+# Conditional AuthProc Insertion
+
+There are use cases where you want to run a set of authproc filters, but only if a certain condition is met when a user is
+logging in. Not all authproc filters support conditional use. Subclasses of `BaseConditionalAuthProcInserter`
+allow you to insert an arbitrary number of authproc filters at the `BaseConditionalAuthProcInserter` priority during
+authproc processing. This allows you to check things in the user's state prior to creating the filters.
+
+## PhpConditionalAuthProcInserter
+
+`PhpConditionalAuthProcInserter` is an example of defining a boolean expression that determines if the authproc filters
+are created. Two variables are available: `array $attributes` and `array $state`
+
+```php
+// In your authsources.php or saml20-idp-metadata.php or whereever you define your authprocs
+   'authproc' => [
+       10 => [
+           // a norma authproc
+           'core:AttributeMap'
+       ],
+       20 => [
+             'class' => 'cirrusgeneral:PhpConditionalAuthProcInserter'
+             //php boolean expression. Two variables are available: $attributes and $state
+             'condition' => 'return $state["saml:sp:AuthnContext"] !== "https://refeds.org/profile/mfa";',
+             // These will only get created if AuthnContext is not refeds MFA, and they will run immediately after
+             // PhpConditionalAuthProcInserter
+             'authproc' => [
+                [
+                  'class' => 'core:AttributeAdd',
+                  'newAttribute' => array('newValue'),
+                ],
+                [
+                   'class' => 'core:AttributeMap',
+                ],
+             ]
+       ],
+       30 => [
+          // another normal authproc
+          'core:AttributeMap'
+       ]
+
+
+   ]
+
+```
 
 # Development
 
