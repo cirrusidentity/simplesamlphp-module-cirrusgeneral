@@ -14,20 +14,27 @@ abstract class BaseConditionalAuthProcInserter extends ProcessingFilter
 
     protected array $authProcs;
 
+    protected array $elseAuthProcs;
+
+
     public function __construct(&$config, $reserved)
     {
         parent::__construct($config, $reserved);
         $conf = Configuration::loadFromArray($config);
-        $this->authProcs = $conf->getArray('authproc');
+        $this->authProcs = $conf->getArray('authproc', []);
+        $this->elseAuthProcs = $conf->getArray('elseAuthproc', []);
     }
 
 
     public function process(&$state)
     {
         if ($this->shouldAddFilters($state)) {
-            $ruleInserter = new AuthProcRuleInserter();
-            $ruleInserter->createAndInsertFilters($state, $this->authProcs);
+            $filtersToAdd = $this->authProcs;
+        } else {
+            $filtersToAdd = $this->elseAuthProcs;
         }
+        $ruleInserter = new AuthProcRuleInserter();
+        $ruleInserter->createAndInsertFilters($state, $filtersToAdd);
     }
 
     /**

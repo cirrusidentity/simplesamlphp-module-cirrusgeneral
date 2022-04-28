@@ -250,8 +250,8 @@ are created. Two variables are available: `array $attributes` and `array $state`
        20 => [
              'class' => 'cirrusgeneral:PhpConditionalAuthProcInserter'
              //php boolean expression. Two variables are available: $attributes and $state
-             'condition' => 'return $state["saml:sp:AuthnContext"] !== "https://refeds.org/profile/mfa";',
-             // These will only get created if AuthnContext is not refeds MFA, and they will run immediately after
+             'condition' => 'return $state["saml:sp:AuthnContext"] === "https://refeds.org/profile/mfa";',
+             // These will only get created if AuthnContext is refeds MFA, and they will run immediately after
              // PhpConditionalAuthProcInserter
              'authproc' => [
                 [
@@ -260,6 +260,15 @@ are created. Two variables are available: `array $attributes` and `array $state`
                 ],
                 [
                    'class' => 'core:AttributeMap',
+                ],
+             ],
+             // These will only get created if authnContext is not refeds MFA
+             'elseAuthproc' => [
+                [
+                  'class' => 'somemodule:PerformMfa',
+                ],
+                [
+                   'class' => 'somemodule:SetRefedsMfa',
                 ],
              ]
        ],

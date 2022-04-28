@@ -4,6 +4,7 @@ namespace Test\SimpleSAML\Auth\Process;
 
 use PHPUnit\Framework\TestCase;
 use SimpleSAML\Auth\ProcessingChain;
+use SimpleSAML\Module\cirrusgeneral\Auth\Process\AttributeRemove;
 use SimpleSAML\Module\cirrusgeneral\Auth\Process\PhpConditionalAuthProcInserter;
 use SimpleSAML\Module\core\Auth\Process\AttributeAdd;
 use SimpleSAML\Module\core\Auth\Process\AttributeLimit;
@@ -11,7 +12,14 @@ use SimpleSAML\Module\core\Auth\Process\AttributeLimit;
 class PhpConditionalAuthProcInserterTest extends TestCase
 {
 
-    public function testFalseConditionMakesNoChange()
+    /**
+     * @dataProvider falseConditionProvider
+     * @param array|null $elseAuthProcConfig if any elseAuthproc confiugrations should be sent to filter
+     * @param array $expectedClasses The class names expected in the authproc state
+     * @return void
+     * @throws \SimpleSAML\Error\Exception
+     */
+    public function testFalseCondition(?array $elseAuthProcConfig, array $expectedClasses): void
     {
         $config = [
             //php code
@@ -24,6 +32,9 @@ class PhpConditionalAuthProcInserterTest extends TestCase
                 ],
             ]
         ];
+        if (!is_null($elseAuthProcConfig)) {
+            $config['elseAuthproc'] = $elseAuthProcConfig;
+        }
         $limitConfig = [];
         $state = [
             'Attributes' => [],
@@ -33,27 +44,53 @@ class PhpConditionalAuthProcInserterTest extends TestCase
         ];
         $filter = new PhpConditionalAuthProcInserter($config, []);
         $filter->process($state);
-        // Confirm no changes to authproc filters
-        $this->assertCount(1, $state[ProcessingChain::FILTERS_INDEX]);
-        $this->assertInstanceOf(AttributeLimit::class, $state[ProcessingChain::FILTERS_INDEX][0]);
+        $this->assertCount(count($expectedClasses), $state[ProcessingChain::FILTERS_INDEX]);
+        $counter = 0;
+        foreach ($expectedClasses as $expectedClass) {
+            $this->assertInstanceOf($expectedClass, $state[ProcessingChain::FILTERS_INDEX][$counter++]);
+        }
     }
 
-    public function testTrueConditionInsertsFilters()
+    public function falseConditionProvider(): array
+    {
+        return [
+            [null, [AttributeLimit::class]],
+            [[], [AttributeLimit::class]],
+            [
+                [
+                    [
+                        'class' => 'cirrusgeneral:AttributeRemove',
+                    ],
+                ],
+                [AttributeRemove::class, AttributeLimit::class]
+            ]
+        ];
+    }
+
+    /**
+     * @dataProvider trueConditionProvider
+     * @param array|null $authProcConfig
+     * @param array $expectedClasses
+     * @return void
+     * @throws \SimpleSAML\Error\Exception
+     */
+    public function testTrueCondition(?array $authProcConfig, array $expectedClasses)
     {
         $config = [
             //php code
-            'condition' => 'return $state["saml:sp:AuthnContext"] !== "https://refeds.org/profile/mfa";',
-            //authprocs
-            'authproc' => [
+            'condition' => 'return $state["saml:sp:AuthnContext"] === "https://refeds.org/profile/mfa";',
+            'elseAuthproc' => [
                 [
-                    'class' => 'core:AttributeAdd',
-                    'mfaStillRequired' => array('true'),
+                    'class' => 'core:AttributeMap',
                 ],
             ]
         ];
+        if (!is_null($authProcConfig)) {
+            $config['authproc'] = $authProcConfig;
+        }
         $limitConfig = [];
         $state = [
-            'saml:sp:AuthnContext' => 'someContext',
+            'saml:sp:AuthnContext' => 'https://refeds.org/profile/mfa',
             'Attributes' => [],
             ProcessingChain::FILTERS_INDEX => [
                 new AttributeLimit($limitConfig, [])
@@ -61,9 +98,23 @@ class PhpConditionalAuthProcInserterTest extends TestCase
         ];
         $filter = new PhpConditionalAuthProcInserter($config, []);
         $filter->process($state);
-        // Confirm no changes to authproc filters
-        $this->assertCount(2, $state[ProcessingChain::FILTERS_INDEX]);
-        $this->assertInstanceOf(AttributeAdd::class, $state[ProcessingChain::FILTERS_INDEX][0]);
-        $this->assertInstanceOf(AttributeLimit::class, $state[ProcessingChain::FILTERS_INDEX][1]);
+        $this->assertCount(count($expectedClasses), $state[ProcessingChain::FILTERS_INDEX]);
+        $counter = 0;
+        foreach ($expectedClasses as $expectedClass) {
+            $this->assertInstanceOf($expectedClass, $state[ProcessingChain::FILTERS_INDEX][$counter++]);
+        }
+    }
+
+    public function trueConditionProvider(): array
+    {
+        return [
+            [null, [AttributeLimit::class]],
+            [[], [AttributeLimit::class]],
+            [[
+                [
+                    'class' => 'core:AttributeAdd',
+                ]
+            ], [AttributeAdd::class, AttributeLimit::class]],
+        ];
     }
 }
