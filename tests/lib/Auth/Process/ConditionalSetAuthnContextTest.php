@@ -6,7 +6,6 @@ use SimpleSAML\Module\cirrusgeneral\Auth\Process\ConditionalSetAuthnContext;
 
 class ConditionalSetAuthnContextTest extends \PHPUnit\Framework\TestCase
 {
-
     public function setup()
     {
         putenv('SIMPLESAMLPHP_CONFIG_DIR=' . dirname(dirname(dirname(__DIR__))) . '/config');

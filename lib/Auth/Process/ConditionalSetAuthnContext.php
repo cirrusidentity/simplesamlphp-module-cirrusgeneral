@@ -13,7 +13,6 @@ use SimpleSAML\Logger;
  */
 class ConditionalSetAuthnContext extends ProcessingFilter
 {
-
     /**
      * @var string[] the path through the request to get the values
      */

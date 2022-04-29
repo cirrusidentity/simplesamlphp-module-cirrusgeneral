@@ -22,7 +22,6 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class PromptAttributeRelease extends ProcessingFilter
 {
-
     public static string $STATE_STAGE = 'prompt:request';
 
     private string $attributeName;

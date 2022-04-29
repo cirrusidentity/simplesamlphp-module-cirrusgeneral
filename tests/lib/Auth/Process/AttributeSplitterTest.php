@@ -14,7 +14,6 @@ use SimpleSAML\Module\cirrusgeneral\Auth\Process\AttributeSplitter;
 
 class AttributeSplitterTest extends TestCase
 {
-
     public function setup()
     {
         putenv('SIMPLESAMLPHP_CONFIG_DIR=' . dirname(dirname(dirname(__DIR__))) . '/config');

@@ -12,7 +12,6 @@ use SimpleSAML\Module\cirrusgeneral\Auth\AuthProcRuleInserter;
  */
 abstract class BaseConditionalAuthProcInserter extends ProcessingFilter
 {
-
     protected array $authProcs;
 
     protected array $elseAuthProcs;

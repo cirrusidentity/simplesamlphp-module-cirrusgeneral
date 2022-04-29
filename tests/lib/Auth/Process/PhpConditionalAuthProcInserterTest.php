@@ -11,7 +11,6 @@ use SimpleSAML\Module\core\Auth\Process\AttributeLimit;
 
 class PhpConditionalAuthProcInserterTest extends TestCase
 {
-
     /**
      * @dataProvider falseConditionProvider
      * @param array|null $elseAuthProcConfig if any elseAuthproc confiugrations should be sent to filter

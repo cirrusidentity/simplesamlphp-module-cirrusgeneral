@@ -4,7 +4,6 @@ namespace SimpleSAML\Module\cirrusgeneral\Utils;
 
 class AttributeUtils
 {
-
     /**
      * Combine different attribute arrays together and make the contents unique.
      * @param array $attributeArrays Each element is an array of attributes

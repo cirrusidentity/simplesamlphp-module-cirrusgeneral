@@ -15,7 +15,6 @@ use SimpleSAML\Logger;
  */
 class AttributeRemove extends ProcessingFilter
 {
-
     /**
      * The names of attributes to remove
      * @var string[]

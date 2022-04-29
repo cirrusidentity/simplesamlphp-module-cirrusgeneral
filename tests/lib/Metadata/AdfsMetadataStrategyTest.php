@@ -7,7 +7,6 @@ use SimpleSAML\Module\cirrusgeneral\Metadata\AdfsMetadataStrategy;
 
 class AdfsMetadataStrategyTest extends TestCase
 {
-
     private $notAdfsMetadata = [
         'entityid' => 'http://sts.example.edu/idp',
         'metadata-set' => 'saml20-idp-remote',

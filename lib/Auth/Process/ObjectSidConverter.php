@@ -12,7 +12,6 @@ use SimpleSAML\Configuration;
  */
 class ObjectSidConverter extends ProcessingFilter
 {
-
     /**
      * @var string The attribute to convert from
      */

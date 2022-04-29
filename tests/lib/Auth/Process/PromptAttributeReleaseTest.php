@@ -16,7 +16,6 @@ use Symfony\Component\HttpFoundation\Request;
 
 class PromptAttributeReleaseTest extends TestCase
 {
-
     private array $state = [
         'Attributes' => [
             'someAttribute' => ['val1', 'val2', 'val3'],

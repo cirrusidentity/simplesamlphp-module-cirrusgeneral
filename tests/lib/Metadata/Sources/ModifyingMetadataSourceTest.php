@@ -9,7 +9,6 @@ use SimpleSAML\Metadata\MetaDataStorageHandler;
 
 class ModifyingMetadataSourceTest extends TestCase
 {
-
     private $config = [
         'metadata.sources' => [
             [

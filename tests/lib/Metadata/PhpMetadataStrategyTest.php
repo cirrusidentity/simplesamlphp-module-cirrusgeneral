@@ -7,7 +7,6 @@ use SimpleSAML\Module\cirrusgeneral\Metadata\PhpMetadataStrategy;
 
 class PhpMetadataStrategyTest extends TestCase
 {
-
     private $metadata = [
         'entityid' => 'https://someapp.com',
 

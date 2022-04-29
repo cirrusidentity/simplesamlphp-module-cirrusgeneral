@@ -14,7 +14,6 @@ use SimpleSAML\Logger;
  */
 class AttributeSplitter extends ProcessingFilter
 {
-
     /**
      * The pattern to break the values on.
      * @var string

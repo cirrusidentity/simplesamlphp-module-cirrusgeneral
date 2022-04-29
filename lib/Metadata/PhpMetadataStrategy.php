@@ -7,7 +7,6 @@ namespace SimpleSAML\Module\cirrusgeneral\Metadata;
  */
 class PhpMetadataStrategy implements MetadataModifyStrategy
 {
-
     /**
      * The PHP code that should be run.
      *
