@@ -21,7 +21,7 @@ class PhpConditionalAuthProcInserter extends BaseConditionalAuthProcInserter
         $this->condition = $conf->getString('condition');
     }
 
-    protected function shouldAddFilters(array &$state): bool
+    protected function checkCondition(array &$state): bool
     {
         $function = /** @return bool */ function (
             array &$attributes,

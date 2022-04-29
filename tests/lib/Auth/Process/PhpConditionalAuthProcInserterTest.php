@@ -78,7 +78,8 @@ class PhpConditionalAuthProcInserterTest extends TestCase
     {
         $config = [
             //php code
-            'condition' => 'return $state["saml:sp:AuthnContext"] === "https://refeds.org/profile/mfa";',
+            //phpcs:ignore Generic.Files.LineLength.TooLong
+            'condition' => 'return $state["saml:sp:State"]["saml:sp:AuthnContext"] === "https://refeds.org/profile/mfa";',
             'elseAuthproc' => [
                 [
                     'class' => 'core:AttributeMap',
@@ -90,7 +91,7 @@ class PhpConditionalAuthProcInserterTest extends TestCase
         }
         $limitConfig = [];
         $state = [
-            'saml:sp:AuthnContext' => 'https://refeds.org/profile/mfa',
+            "saml:sp:State" => ['saml:sp:AuthnContext' => 'https://refeds.org/profile/mfa'],
             'Attributes' => [],
             ProcessingChain::FILTERS_INDEX => [
                 new AttributeLimit($limitConfig, [])

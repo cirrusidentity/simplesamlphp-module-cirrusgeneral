@@ -4,6 +4,7 @@ namespace SimpleSAML\Module\cirrusgeneral\Auth\Process;
 
 use SimpleSAML\Auth\ProcessingFilter;
 use SimpleSAML\Configuration;
+use SimpleSAML\Logger;
 use SimpleSAML\Module\cirrusgeneral\Auth\AuthProcRuleInserter;
 
 /**
@@ -28,17 +29,19 @@ abstract class BaseConditionalAuthProcInserter extends ProcessingFilter
 
     public function process(&$state)
     {
-        if ($this->shouldAddFilters($state)) {
+        if ($this->checkCondition($state)) {
             $filtersToAdd = $this->authProcs;
+            Logger::debug('conditionalAuthProc true. Adding `authproc` filters:' . count($filtersToAdd));
         } else {
             $filtersToAdd = $this->elseAuthProcs;
+            Logger::debug('conditionalAuthProc false. Adding `elseAuthproc` filters:' . count($filtersToAdd));
         }
         $ruleInserter = new AuthProcRuleInserter();
         $ruleInserter->createAndInsertFilters($state, $filtersToAdd);
     }
 
     /**
-     * @return bool true indicate filters should be added. false if they should not be added.
+     * @return bool true indicate `authproc` filters should be added. false to add `elseAuthproc`
      */
-    abstract protected function shouldAddFilters(array &$state): bool;
+    abstract protected function checkCondition(array &$state): bool;
 }
