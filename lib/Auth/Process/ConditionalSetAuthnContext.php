@@ -33,6 +33,12 @@ class ConditionalSetAuthnContext extends ProcessingFilter
      */
     private $ignoreForEntities;
 
+    /**
+     * The context to set if $state does not have a value at the path with a matching value
+     * @var string|null
+     */
+    private ?string $elseContextToAssert;
+
     public function __construct(&$config, $reserved)
     {
         parent::__construct($config, $reserved);
@@ -40,6 +46,7 @@ class ConditionalSetAuthnContext extends ProcessingFilter
         $this->path = $config->getArrayizeString('path', ',');
         $this->value = $config->getValue('value');
         $this->contextToAssert = $config->getString('contextToAssert');
+        $this->elseContextToAssert = $config->getString('elseContextToAssert', null);
         $this->ignoreForEntities = $config->getArray('ignoreForEntities', []);
     }
 
@@ -76,6 +83,10 @@ class ConditionalSetAuthnContext extends ProcessingFilter
                 $request['saml:AuthnContextClassRef'] = $this->contextToAssert;
                 return;
             }
+        }
+
+        if (!is_null($this->elseContextToAssert)) {
+            $request['saml:AuthnContextClassRef'] = $this->elseContextToAssert;
         }
     }
 }

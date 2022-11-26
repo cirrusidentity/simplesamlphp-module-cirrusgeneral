@@ -189,6 +189,9 @@ Usage:
         'value' =>  'true',  // Using the string 'true' rather than a boolean true
         'contextToAssert' => 'https://refeds.org/profile/mfa',
         'ignoreForEntities' => ['match1', 'match2', 'other']
+
+        // Optional context to assert if there is no match
+        // 'elseContextToAssert' => 'https://refeds.org/profile/sfa'
     ]
 
 // Example for Okta

@@ -46,10 +46,20 @@ class ConditionalSetAuthnContextTest extends \PHPUnit\Framework\TestCase
      * @param string $value
      * @param null|string $currentContext
      * @param null|string $expectedContext
+     * @param null|bool $configureElseContext If true add an else context if there is no matching value
      */
-    public function testAssertedContext(string $value, ?string $currentContext, ?string $expectedContext)
-    {
-        $state = ['A' => 'B', 'B' => ['C' => ['D', 'F']]];
+    public function testAssertedContext(
+        string $value,
+        ?string $currentContext,
+        ?string $expectedContext,
+        ?bool $configureElseContext = false
+    ) {
+        $state = [
+            'A' => 'B',
+            'B' => [
+                'C' => ['D', 'F']
+            ]
+        ];
         if ($currentContext) {
             $state['saml:AuthnContextClassRef'] = $currentContext;
         }
@@ -58,6 +68,9 @@ class ConditionalSetAuthnContextTest extends \PHPUnit\Framework\TestCase
             'value' => $value,
             'contextToAssert' => 'newContext'
         ];
+        if ($configureElseContext) {
+            $config['elseContextToAssert'] = 'elseContext';
+        }
         $filter = new ConditionalSetAuthnContext($config, null);
         $filter->process($state);
 
@@ -74,9 +87,12 @@ class ConditionalSetAuthnContextTest extends \PHPUnit\Framework\TestCase
         //TODO: test non array values
         return [
             ['NO', null, null], // no match, no context change
+            ['NO', null, 'elseContext', true], // no match, no context change
             ['D', null, 'newContext'],
             ['F', null, 'newContext'],
+            ['F', null, 'newContext', false],
             ['NO', 'mycontext', 'mycontext'], // no match, no context change
+            ['NO', 'mycontext', 'elseContext', true],
             ['D', 'mycontext', 'newContext'],
             ['F', 'mycontext', 'newContext'],
         ];
