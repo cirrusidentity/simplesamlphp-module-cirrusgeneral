@@ -15,7 +15,7 @@ class ConditionalSetAuthnContextTest extends \PHPUnit\Framework\TestCase
      * @param $path array
      * @dataProvider noMatchingStatePathProvider
      */
-    public function testNoMatchingStatePath(array $path)
+    public function testNoMatchingStatePath(array $path, ?bool $configureElseContext = false)
     {
         $state = ['A' => 'B', 'B' => ['C' => 'D']];
         $expectedState = $state;
@@ -24,10 +24,18 @@ class ConditionalSetAuthnContextTest extends \PHPUnit\Framework\TestCase
             'value' => 'someValue',
             'contextToAssert' => 'someContext'
         ];
+        if ($configureElseContext) {
+            $config['elseContextToAssert'] = 'elseContext';
+        }
         $filter = new ConditionalSetAuthnContext($config, null);
         $filter->process($state);
 
-        $this->assertEquals($expectedState, $state, 'State should not change');
+        if ($configureElseContext) {
+            $this->assertArrayHasKey('saml:AuthnContextClassRef', $state);
+            $this->assertEquals('elseContext', $state['saml:AuthnContextClassRef']);
+        } else {
+            $this->assertEquals($expectedState, $state, 'State should not change');
+        }
     }
 
     public function noMatchingStatePathProvider(): array
@@ -35,9 +43,13 @@ class ConditionalSetAuthnContextTest extends \PHPUnit\Framework\TestCase
 
         return [
             [[]],
+            [[], true],
             [['Z']], // no such path
+            [['Z'], true], // no such path
             [['B', 'Z']], // B exists, Z is not a validpath
+            [['B', 'Z'], true], // B exists, Z is not a validpath
             [['B', 'D', 'Z']], // attempt to traverse through non-array value
+            [['B', 'D', 'Z'], true], // attempt to traverse through non-array value
         ];
     }
 

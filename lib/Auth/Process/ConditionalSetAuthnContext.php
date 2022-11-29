@@ -66,10 +66,12 @@ class ConditionalSetAuthnContext extends ProcessingFilter
         $traversedValue = $request;
         foreach ($this->path as $key) {
             if (!is_array($traversedValue)) {
+                $this->setElseContextIfConfigured($request);
                 Logger::warning("Traversed path encountered non array when looking for key '$key'");
                 return;
             }
             if (!array_key_exists($key, $traversedValue)) {
+                $this->setElseContextIfConfigured($request);
                 return;
             }
             $traversedValue = $traversedValue[$key];
@@ -85,6 +87,11 @@ class ConditionalSetAuthnContext extends ProcessingFilter
             }
         }
 
+        $this->setElseContextIfConfigured($request);
+    }
+
+    private function setElseContextIfConfigured(array &$request): void
+    {
         if (!is_null($this->elseContextToAssert)) {
             $request['saml:AuthnContextClassRef'] = $this->elseContextToAssert;
         }
