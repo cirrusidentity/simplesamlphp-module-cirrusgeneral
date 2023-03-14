@@ -18,7 +18,6 @@ use SimpleSAML\Module\cirrusgeneral\Metadata\Sources\ModifyingMetadataSource;
  */
 class OverridingMetadataStrategy implements MetadataModifyStrategy
 {
-
     private MetaDataStorageSource $source;
 
     /**
@@ -36,6 +35,7 @@ class OverridingMetadataStrategy implements MetadataModifyStrategy
      * @param string $entityId The entity id that is being loaded
      * @param string $set The metadata set
      * @return array|null The new metadata or null if there is none
+     * @psalm-return ($metadata is array ? array : null)
      */
     public function modifyMetadata(?array $metadata, string $entityId, string $set): ?array
     {
@@ -44,7 +44,10 @@ class OverridingMetadataStrategy implements MetadataModifyStrategy
         }
         $overrides = $this->source->getMetaData($entityId, $set . '-override');
         // TODO: remove operational attributes ??
-        if ($overrides) {
+        if (is_array($overrides)) {
+            /**
+             * @psalm-var array
+             */
             return $overrides + $metadata;
         }
         return $metadata;

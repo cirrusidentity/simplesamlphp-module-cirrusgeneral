@@ -7,7 +7,7 @@ use SimpleSAML\Module\cirrusgeneral\Metadata\AdfsMetadataStrategy;
 
 class AdfsMetadataStrategyTest extends TestCase
 {
-    private $notAdfsMetadata = [
+    private array $notAdfsMetadata = [
         'entityid' => 'http://sts.example.edu/idp',
         'metadata-set' => 'saml20-idp-remote',
         'SingleSignOnService' =>
@@ -51,7 +51,7 @@ class AdfsMetadataStrategyTest extends TestCase
             )
     ];
 
-    private $adfsMetadata = [
+    private array $adfsMetadata = [
         'entityid' => 'http://sts.example.edu/adfs/services/trust',
         'metadata-set' => 'saml20-idp-remote',
         'SingleSignOnService' =>
@@ -95,7 +95,7 @@ class AdfsMetadataStrategyTest extends TestCase
             )
     ];
 
-    private $azureMetadata = array (
+    private array $azureMetadata = array (
         'entityid' => 'https://sts.windows.net/ee4b037f-e626-495d-b017-0cc0f7dddb37/',
         'metadata-set' => 'saml20-idp-remote',
         'SingleSignOnService' =>
@@ -142,6 +142,7 @@ class AdfsMetadataStrategyTest extends TestCase
             $this->adfsMetadata['entityid'],
             'saml20-idp-remote'
         );
+        $this->assertArrayHasKey('disable_scoping', $postMetadata);
         $this->assertTrue($postMetadata['disable_scoping'], 'ADFS does not support scoping');
         unset($postMetadata['disable_scoping']);
         $this->assertEquals($this->adfsMetadata, $postMetadata, 'The rest of the metadata is unaltered');
@@ -156,6 +157,7 @@ class AdfsMetadataStrategyTest extends TestCase
             $this->azureMetadata['entityid'],
             'saml20-idp-remote'
         );
+        $this->assertArrayHasKey('disable_scoping', $postMetadata);
         $this->assertTrue($postMetadata['disable_scoping'], 'Azure AD is too strict on scoping, and can error');
         unset($postMetadata['disable_scoping']);
         $this->assertEquals($this->azureMetadata, $postMetadata, 'The rest of the metadata is unaltered');
@@ -178,7 +180,7 @@ class AdfsMetadataStrategyTest extends TestCase
      * @param array $metadata The metadata to test
      * @param string $set The set
      */
-    public function testNoAdjustmentsForNonAdfsOrNonIdpRemote($metadata, $set): void
+    public function testNoAdjustmentsForNonAdfsOrNonIdpRemote(array $metadata, string $set): void
     {
         $adfsStrategy = new AdfsMetadataStrategy();
         $postMetadata = $adfsStrategy->modifyMetadata($metadata, $metadata['entityid'], $set);

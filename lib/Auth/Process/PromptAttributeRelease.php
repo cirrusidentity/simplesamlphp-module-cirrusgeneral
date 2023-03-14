@@ -13,6 +13,7 @@ use SimpleSAML\Utils\HTTP;
 use SimpleSAML\XHTML\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Webmozart\Assert\Assert;
 
 /**
  * Prompt a user to pick which value of a multi-valued attribute to release to an SP.
@@ -68,12 +69,13 @@ class PromptAttributeRelease extends ProcessingFilter
 
     /**
      * @param array $state
-     * @param string|null $attributeName
-     * @param string|null $attributeValue
+     * @param string $attributeName
+     * @param string $attributeValue
      * @return Response|void
      */
-    public static function processResponse(array $state, ?string $attributeName, ?string $attributeValue)
+    public static function processResponse(array $state, string $attributeName, string $attributeValue)
     {
+        Assert::keyExists($state, 'Attributes');
         $allowedAttribute =  $state['cirrusgeneral:prompt']['attributeName'];
         if ($attributeName !== $allowedAttribute) {
             Logger::info("prompt: invalid attribute selected. Allowed '$allowedAttribute', selected '$attributeName'");
@@ -115,17 +117,19 @@ class PromptAttributeRelease extends ProcessingFilter
         }
 
         $stateId = $request->query->get('StateId');
-        if (is_null($stateId)) {
+        if (!is_string($stateId)) {
             throw new BadRequest(
-                'Missing required StateId query parameter.'
+                'Missing required StateId query parameter or is not a string.'
             );
         }
 
         $state = State::loadState($stateId, PromptAttributeRelease::$STATE_STAGE);
 
+        $name = $request->query->get('name');
+        $value = $request->query->get('value');
         // Check if user submitted or is viewing
-        if ($request->query->has('name')) {
-            return self::processResponse($state, $request->query->get('name'), $request->query->get('value'));
+        if (is_string($name) && is_string($value)) {
+            return self::processResponse($state, $name, $value);
         } else {
             return self::generateTemplate($state);
         }
@@ -134,9 +138,9 @@ class PromptAttributeRelease extends ProcessingFilter
     public function getHttp(): HTTP
     {
 
-         if (!isset($this->http)) {
-             $this->http = new HTTP();
-         }
+        if (!isset($this->http)) {
+            $this->http = new HTTP();
+        }
          return $this->http;
     }
 

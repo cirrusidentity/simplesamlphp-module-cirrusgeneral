@@ -18,6 +18,7 @@ class AdfsMetadataStrategy implements MetadataModifyStrategy
      * @param string $entityId The entity id that is being loaded
      * @param string $set The metadata set
      * @return array|null The new metadata or null if there is none
+     * @psalm-return ($metadata is array ? array : null)
      */
     public function modifyMetadata(?array $metadata, string $entityId, string $set): ?array
     {

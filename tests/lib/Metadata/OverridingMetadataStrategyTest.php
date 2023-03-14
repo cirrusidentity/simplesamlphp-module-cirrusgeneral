@@ -5,6 +5,9 @@ namespace Test\SimpleSAML\Metadata;
 use PHPUnit\Framework\TestCase;
 use SimpleSAML\Module\cirrusgeneral\Metadata\OverridingMetadataStrategy;
 
+/**
+ * @psalm-suppress PossiblyNullArrayAccess metadata is an array, we want to test without these warnings
+ */
 class OverridingMetadataStrategyTest extends TestCase
 {
     private $noMatchMetadata = [

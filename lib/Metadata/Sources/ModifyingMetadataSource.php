@@ -17,13 +17,13 @@ class ModifyingMetadataSource extends MetaDataStorageSource
      * The list of strategies to run to adjust the metadata
      * @var MetadataModifyStrategy[]
      */
-    private $strategies = [];
+    private array $strategies = [];
 
     /**
      * Sources to delegate to for loading
      * @var MetaDataStorageSource[]
      */
-    private $delegateSources = [];
+    private array $delegateSources;
 
     public function __construct(array $sourceConfig)
     {
@@ -79,7 +79,7 @@ class ModifyingMetadataSource extends MetaDataStorageSource
         return $metadata;
     }
 
-    private function resolveStrategy(array $strategyConfig): object
+    private function resolveStrategy(array $strategyConfig): MetadataModifyStrategy
     {
         $type = $strategyConfig['type'];
         try {
@@ -93,6 +93,9 @@ class ModifyingMetadataSource extends MetaDataStorageSource
                 null
             );
         }
+        /**
+         * @psalm-var MetadataModifyStrategy
+         */
         return new $className($strategyConfig);
     }
 }

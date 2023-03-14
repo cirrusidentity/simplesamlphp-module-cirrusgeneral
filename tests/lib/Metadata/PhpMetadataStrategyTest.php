@@ -5,6 +5,9 @@ namespace Test\SimpleSAML\Metadata;
 use PHPUnit\Framework\TestCase;
 use SimpleSAML\Module\cirrusgeneral\Metadata\PhpMetadataStrategy;
 
+/**
+ * @psalm-suppress PossiblyNullArrayAccess metadata is an array, we want to test without these warnings
+ */
 class PhpMetadataStrategyTest extends TestCase
 {
     private $metadata = [

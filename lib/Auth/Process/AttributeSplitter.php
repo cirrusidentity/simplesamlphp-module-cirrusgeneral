@@ -5,6 +5,7 @@ namespace SimpleSAML\Module\cirrusgeneral\Auth\Process;
 use SimpleSAML\Auth\ProcessingFilter;
 use SimpleSAML\Configuration;
 use SimpleSAML\Logger;
+use Webmozart\Assert\Assert;
 
 /**
  * Some upstream IdPs provide multi-valued attributes as a comma separated values instead of as multiple values.
@@ -46,6 +47,8 @@ class AttributeSplitter extends ProcessingFilter
         if (!array_key_exists('Attributes', $state)) {
             return;
         }
+        Assert::notEmpty($this->delimiter, 'Delimiter must hava value');
+
         $requestAttributes = &$state['Attributes'];
         foreach ($this->attributes as $attributeKey) {
             if (!array_key_exists($attributeKey, $requestAttributes)) {
