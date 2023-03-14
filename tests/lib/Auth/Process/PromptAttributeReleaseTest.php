@@ -5,11 +5,13 @@ namespace Test\SimpleSAML\Auth\Process;
 use CirrusIdentity\SSP\Test\Capture\RedirectException;
 use CirrusIdentity\SSP\Test\InMemoryStore;
 use CirrusIdentity\SSP\Test\MockHttpBuilder;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use SimpleSAML\Auth\ProcessingChain;
 use SimpleSAML\Auth\State;
 use SimpleSAML\Error\NoState;
 use SimpleSAML\Module\cirrusgeneral\Auth\Process\PromptAttributeRelease;
+use SimpleSAML\Utils\HTTP;
 use SimpleSAML\XHTML\Template;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -22,6 +24,10 @@ class PromptAttributeReleaseTest extends TestCase
             'noValues' => [],
         ]
     ];
+    /**
+     * @var MockObject&HTTP
+     */
+    private $mockHttp;
 
     protected function setup(): void
     {

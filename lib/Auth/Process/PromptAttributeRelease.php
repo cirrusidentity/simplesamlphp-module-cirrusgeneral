@@ -66,8 +66,13 @@ class PromptAttributeRelease extends ProcessingFilter
         $this->getHttp()->redirectTrustedURL($url, ['StateId' => $id]);
     }
 
-
-    public static function processResponse(array $state, ?string $attributeName, ?string $attributeValue): Response
+    /**
+     * @param array $state
+     * @param string|null $attributeName
+     * @param string|null $attributeValue
+     * @return Response|void
+     */
+    public static function processResponse(array $state, ?string $attributeName, ?string $attributeValue)
     {
         $allowedAttribute =  $state['cirrusgeneral:prompt']['attributeName'];
         if ($attributeName !== $allowedAttribute) {
@@ -98,7 +103,12 @@ class PromptAttributeRelease extends ProcessingFilter
         return $t;
     }
 
-    public static function handleRequest(Request $request = null): Template
+    /**
+     * @param Request|null $request
+     * @return Response|Template|void The template to render or void (continue processing authprocs)
+     * @throws BadRequest
+     */
+    public static function handleRequest(Request $request = null)
     {
         if ($request === null) {
             $request = Request::createFromGlobals();
@@ -121,9 +131,6 @@ class PromptAttributeRelease extends ProcessingFilter
         }
     }
 
-    /**
-     * @return HTTP|null
-     */
     public function getHttp(): HTTP
     {
 

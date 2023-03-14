@@ -17,15 +17,15 @@ class AttributeValueMapper extends ProcessingFilter
 {
     /**
      * The csv to use in mapping
-     * @var string
+     * @var ?string
      */
-    private $fileName;
+    private ?string $fileName;
 
     /**
      * Look up mappings
      * @var array
      */
-    private $mappingLookup = [];
+    private array $mappingLookup = [];
 
     /**
      * AttributeValueMapper constructor.
@@ -34,8 +34,8 @@ class AttributeValueMapper extends ProcessingFilter
     {
         parent::__construct($config, $reserved);
         $config = Configuration::loadFromArray($config);
-        $this->fileName = $config->getString('csvFile', null);
-        $this->mappingLookup = $config->getArray('mappingLookup', []);
+        $this->fileName = $config->getOptionalString('csvFile', null);
+        $this->mappingLookup = $config->getOptionalArray('mappingLookup', []);
     }
 
 

@@ -27,7 +27,7 @@ class ModifyingMetadataSource extends MetaDataStorageSource
 
     public function __construct(array $sourceConfig)
     {
-        assert(is_array($sourceConfig));
+        parent::__construct();
         $config = Configuration::loadFromArray($sourceConfig);
         foreach ($config->getArray('strategies') as $strategyConfig) {
             $this->strategies[] = $this->resolveStrategy($strategyConfig);
