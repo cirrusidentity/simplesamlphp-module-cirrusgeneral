@@ -6,16 +6,17 @@ use SimpleSAML\Module\cirrusgeneral\Auth\Process\ConditionalSetAuthnContext;
 
 class ConditionalSetAuthnContextTest extends \PHPUnit\Framework\TestCase
 {
-    public function setup()
+    public function setup(): void
     {
-        putenv('SIMPLESAMLPHP_CONFIG_DIR=' . dirname(dirname(dirname(__DIR__))) . '/config');
+        putenv('SIMPLESAMLPHP_CONFIG_DIR=' . dirname(__DIR__, 3) . '/config');
     }
 
     /**
      * @param $path array
+     *
      * @dataProvider noMatchingStatePathProvider
      */
-    public function testNoMatchingStatePath(array $path, ?bool $configureElseContext = false)
+    public function testNoMatchingStatePath(array $path, ?bool $configureElseContext = false): void
     {
         $state = ['A' => 'B', 'B' => ['C' => 'D']];
         $expectedState = $state;
@@ -55,6 +56,7 @@ class ConditionalSetAuthnContextTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider assertedContextProvider
+     *
      * @param string $value
      * @param null|string $currentContext
      * @param null|string $expectedContext
@@ -65,7 +67,7 @@ class ConditionalSetAuthnContextTest extends \PHPUnit\Framework\TestCase
         ?string $currentContext,
         ?string $expectedContext,
         ?bool $configureElseContext = false
-    ) {
+    ): void {
         $state = [
             'A' => 'B',
             'B' => [
@@ -112,9 +114,10 @@ class ConditionalSetAuthnContextTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider spIgnoreListProvider
+     *
      * @param null|string $spEntityId
      */
-    public function testSpIgnoreList(?string $spEntityId, $expectedContext)
+    public function testSpIgnoreList(?string $spEntityId, $expectedContext): void
     {
         $state = [
             'keyToCheck' => 'enableContext',

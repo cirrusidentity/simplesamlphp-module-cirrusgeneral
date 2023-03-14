@@ -43,35 +43,35 @@ class ConditionalSetAuthnContext extends ProcessingFilter
     {
         parent::__construct($config, $reserved);
         $config = Configuration::loadFromArray($config);
-        $this->path = $config->getArrayizeString('path', ',');
+        $this->path = $config->getArrayizeString('path');
         $this->value = $config->getValue('value');
         $this->contextToAssert = $config->getString('contextToAssert');
-        $this->elseContextToAssert = $config->getString('elseContextToAssert', null);
-        $this->ignoreForEntities = $config->getArray('ignoreForEntities', []);
+        $this->elseContextToAssert = $config->getOptionalString('elseContextToAssert', null);
+        $this->ignoreForEntities = $config->getOptionalArrayizeString('ignoreForEntities', []);
     }
 
 
     /**
-     * Adjusts the authncontext if the the user attributes matches the above
+     * Adjusts the authncontext if the user attributes matches the above
      *
-     * @param array &$request The request we are currently processing.
+     * @param array &$state The request we are currently processing.
      */
-    public function process(&$request)
+    public function process(array &$state): void
     {
-        $spEntityId = $request['Destination']['entityid'] ?? 'no-sp-entity-id';
+        $spEntityId = $state['Destination']['entityid'] ?? 'no-sp-entity-id';
         if (in_array($spEntityId, $this->ignoreForEntities)) {
             Logger::debug("No authn context changes for '$spEntityId'");
             return;
         }
-        $traversedValue = $request;
+        $traversedValue = $state;
         foreach ($this->path as $key) {
             if (!is_array($traversedValue)) {
-                $this->setElseContextIfConfigured($request);
+                $this->setElseContextIfConfigured($state);
                 Logger::warning("Traversed path encountered non array when looking for key '$key'");
                 return;
             }
             if (!array_key_exists($key, $traversedValue)) {
-                $this->setElseContextIfConfigured($request);
+                $this->setElseContextIfConfigured($state);
                 return;
             }
             $traversedValue = $traversedValue[$key];
@@ -82,12 +82,12 @@ class ConditionalSetAuthnContext extends ProcessingFilter
         }
         foreach ($traversedValue as $toCheck) {
             if ($toCheck === $this->value) {
-                $request['saml:AuthnContextClassRef'] = $this->contextToAssert;
+                $state['saml:AuthnContextClassRef'] = $this->contextToAssert;
                 return;
             }
         }
 
-        $this->setElseContextIfConfigured($request);
+        $this->setElseContextIfConfigured($state);
     }
 
     private function setElseContextIfConfigured(array &$request): void

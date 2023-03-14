@@ -35,14 +35,14 @@ class AdfsMetadataStrategy implements MetadataModifyStrategy
         return $metadata;
     }
 
-    private function makeAdfsAdjustments($metadata)
+    private function makeAdfsAdjustments(array $metadata)
     {
         // ADFS doesn't like the scoping xml in an AuthnRequest
         $metadata['disable_scoping'] = true;
         return $metadata;
     }
 
-    private function makeAzureAdjustments($metadata)
+    private function makeAzureAdjustments(array $metadata)
     {
         // Azure can handle scoping xml in an AuthnRequest however it can error if the SP
         // entity ID is not a valid uri (which isn't a SAML spec requirement).

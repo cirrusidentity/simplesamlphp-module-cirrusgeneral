@@ -28,16 +28,18 @@ class PromptAttributeRelease extends ProcessingFilter
     private bool $displayAttributeValue;
     private array $labels;
 
+    private ?HTTP $http;
+
     public function __construct(&$config, $reserved)
     {
         parent::__construct($config, $reserved);
         $config = Configuration::loadFromArray($config);
         $this->attributeName = $config->getString('attribute');
-        $this->displayAttributeValue = $config->getBoolean('displayAttributeValue', true);
-        $this->labels = $config->getArray('labels', []);
+        $this->displayAttributeValue = $config->getOptionalBoolean('displayAttributeValue', true);
+        $this->labels = $config->getOptionalArray('labels', []);
     }
 
-    public function process(&$state)
+    public function process(array &$state): void
     {
 
         $attributes = $state['Attributes'];
@@ -61,7 +63,7 @@ class PromptAttributeRelease extends ProcessingFilter
         // Save state and redirect
         $id = State::saveState($state, PromptAttributeRelease::$STATE_STAGE);
         $url = Module::getModuleURL('cirrusgeneral/prompt.php');
-        HTTP::redirectTrustedURL($url, ['StateId' => $id]);
+        $this->getHttp()->redirectTrustedURL($url, ['StateId' => $id]);
     }
 
 
@@ -117,5 +119,25 @@ class PromptAttributeRelease extends ProcessingFilter
         } else {
             return self::generateTemplate($state);
         }
+    }
+
+    /**
+     * @return HTTP|null
+     */
+    public function getHttp(): HTTP
+    {
+
+         if (!isset($this->http)) {
+             $this->http = new HTTP();
+         }
+         return $this->http;
+    }
+
+    /**
+     * @param HTTP|null $http
+     */
+    public function setHttp(?HTTP $http): void
+    {
+        $this->http = $http;
     }
 }

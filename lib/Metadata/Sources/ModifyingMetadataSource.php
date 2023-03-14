@@ -36,7 +36,7 @@ class ModifyingMetadataSource extends MetaDataStorageSource
         $this->delegateSources = MetaDataStorageSource::parseSources($config->getArray('sources'));
     }
 
-    public function getMetadataSet($set)
+    public function getMetadataSet(string $set): array
     {
         $result = array();
 
@@ -53,19 +53,22 @@ class ModifyingMetadataSource extends MetaDataStorageSource
     }
 
 
-    public function getMetaData($index, $set)
+    public function getMetaData(string $entityId, string $set): ?array
     {
         $metadata = null;
         foreach ($this->delegateSources as $source) {
-            $metadata = $source->getMetaData($index, $set);
+            $metadata = $source->getMetaData($entityId, $set);
             if (isset($metadata)) {
                 break;
             }
         }
-        return $this->modifyMetadata($metadata, $index, $set);
+        return $this->modifyMetadata($metadata, $entityId, $set);
     }
 
-    public function modifyMetadata($metadata, $entityId, $set)
+    /**
+     * @param array|null $metadata
+     */
+    public function modifyMetadata(?array $metadata, string $entityId, string $set)
     {
         if ($metadata === null) {
             return $metadata;
@@ -76,7 +79,7 @@ class ModifyingMetadataSource extends MetaDataStorageSource
         return $metadata;
     }
 
-    private function resolveStrategy(array $strategyConfig)
+    private function resolveStrategy(array $strategyConfig): object
     {
         $type = $strategyConfig['type'];
         try {

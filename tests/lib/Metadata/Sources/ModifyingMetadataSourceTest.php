@@ -36,7 +36,7 @@ class ModifyingMetadataSourceTest extends TestCase
         ]
     ];
 
-    public function testModifyingMetadataSourceViaHandler()
+    public function testModifyingMetadataSourceViaHandler(): void
     {
         // Set the config to to use
         Configuration::loadFromArray($this->config, '[ARRAY]', 'simplesaml');
@@ -55,7 +55,7 @@ class ModifyingMetadataSourceTest extends TestCase
         );
     }
 
-    public function testLoadSetViaHandler()
+    public function testLoadSetViaHandler(): void
     {
         // Set the config to to use
         Configuration::loadFromArray($this->config, '[ARRAY]', 'simplesaml');
@@ -70,7 +70,7 @@ class ModifyingMetadataSourceTest extends TestCase
         );
     }
 
-    public function testNotFoundMetadataViaHandler()
+    public function testNotFoundMetadataViaHandler(): void
     {
         Configuration::loadFromArray($this->config, '[ARRAY]', 'simplesaml');
         $handler = MetaDataStorageHandler::getMetadataHandler();

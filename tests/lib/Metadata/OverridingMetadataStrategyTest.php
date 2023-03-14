@@ -65,12 +65,12 @@ class OverridingMetadataStrategyTest extends TestCase
 
     ];
 
-    public function setup()
+    protected function setup(): void
     {
-        putenv('SIMPLESAMLPHP_CONFIG_DIR=' . dirname(dirname(__DIR__)) . '/config');
+        putenv('SIMPLESAMLPHP_CONFIG_DIR=' . dirname(__DIR__, 2) . '/config');
     }
 
-    public function testMatchHasAttributeAdjusted()
+    public function testMatchHasAttributeAdjusted(): void
     {
         $strategy = new OverridingMetadataStrategy($this->config);
         $this->assertNotEquals('customFormat', $this->metadata['NameIDFormats'][0]);
@@ -82,7 +82,7 @@ class OverridingMetadataStrategyTest extends TestCase
         $this->assertEquals('customFormat', $postMetadata['NameIDFormats'][0]);
     }
 
-    public function testNullHandled()
+    public function testNullHandled(): void
     {
         $strategy = new OverridingMetadataStrategy($this->config);
         $postMetadata = $strategy->modifyMetadata(
@@ -95,10 +95,11 @@ class OverridingMetadataStrategyTest extends TestCase
 
     /**
      * @dataProvider noAdjustmentProvider
+     *
      * @param array $metadata The metadata to test
      * @param string $set The set
      */
-    public function testNoAdjustmentsForNonMatch($metadata, $set)
+    public function testNoAdjustmentsForNonMatch($metadata, $set): void
     {
         $strategy = new OverridingMetadataStrategy($this->config);
         $postMetadata = $strategy->modifyMetadata($metadata, $metadata['entityid'], $set);
@@ -109,7 +110,7 @@ class OverridingMetadataStrategyTest extends TestCase
         );
     }
 
-    public function noAdjustmentProvider()
+    public function noAdjustmentProvider(): array
     {
         return [
             [$this->metadata, 'some-set'],

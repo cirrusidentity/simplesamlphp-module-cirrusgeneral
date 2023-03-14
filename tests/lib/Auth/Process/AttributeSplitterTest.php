@@ -14,12 +14,12 @@ use SimpleSAML\Module\cirrusgeneral\Auth\Process\AttributeSplitter;
 
 class AttributeSplitterTest extends TestCase
 {
-    public function setup()
+    protected function setup(): void
     {
-        putenv('SIMPLESAMLPHP_CONFIG_DIR=' . dirname(dirname(dirname(__DIR__))) . '/config');
+        putenv('SIMPLESAMLPHP_CONFIG_DIR=' . dirname(__DIR__, 3) . '/config');
     }
 
-    public function testNoStateAttributes()
+    public function testNoStateAttributes(): void
     {
         $state = ['A' => 'B'];
         $config = [
@@ -31,16 +31,16 @@ class AttributeSplitterTest extends TestCase
         $this->assertEquals(['A' => 'B'], $state);
     }
 
-    public function testNoSplitAttributesDefined()
+    public function testNoSplitAttributesDefined(): void
     {
         $config = [
         ];
         $this->expectException(\Exception::class);
-        $this->expectExceptionMessageRegExp("/Could not retrieve the required option 'attributes'/");
+        $this->expectExceptionMessageMatches("/Could not retrieve the required option 'attributes'/");
         new AttributeSplitter($config, null);
     }
 
-    public function testSplittingOnDefaults()
+    public function testSplittingOnDefaults(): void
     {
         $state = [
             'Attributes' => [
@@ -65,7 +65,7 @@ class AttributeSplitterTest extends TestCase
         $this->assertEquals($expectedResults, $state['Attributes']);
     }
 
-    public function testAlternateDelimeter()
+    public function testAlternateDelimeter(): void
     {
         $state = [
             'Attributes' => [

@@ -41,12 +41,12 @@ class PhpMetadataStrategyTest extends TestCase
     ];
 
 
-    public function setup()
+    protected function setup(): void
     {
-        putenv('SIMPLESAMLPHP_CONFIG_DIR=' . dirname(dirname(__DIR__)) . '/config');
+        putenv('SIMPLESAMLPHP_CONFIG_DIR=' . dirname(__DIR__, 2) . '/config');
     }
 
-    public function testMetadataAdjustment()
+    public function testMetadataAdjustment(): void
     {
         //given:
         // php code that only sets attributes if not defined
@@ -77,7 +77,7 @@ class PhpMetadataStrategyTest extends TestCase
         $this->assertEquals(["attr1", "attr2"], $postMetadata['attributes'], 'Attributes do change');
     }
 
-    public function testNullHandled()
+    public function testNullHandled(): void
     {
         $strategy = new PhpMetadataStrategy(['code' => '']);
         $postMetadata = $strategy->modifyMetadata(

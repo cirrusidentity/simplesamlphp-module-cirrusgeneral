@@ -44,9 +44,9 @@ class AttributeValueMapper extends ProcessingFilter
      *
      * When a filter returns from this function, it is assumed to have completed its task.
      *
-     * @param array &$request The request we are currently processing.
+     * @param array &$state The request we are currently processing.
      */
-    public function process(&$request)
+    public function process(array &$state): void
     {
         if (isset($this->fileName)) {
             $csv = fopen($this->fileName, "r");
@@ -61,7 +61,7 @@ class AttributeValueMapper extends ProcessingFilter
             fclose($csv);
         }
         $mappedAttributes = [];
-        $attributes = $request['Attributes'];
+        $attributes = $state['Attributes'];
         foreach ($this->mappingLookup as $sourceAttribute => $mapTargets) {
             if (array_key_exists($sourceAttribute, $attributes)) {
                 foreach ($attributes[$sourceAttribute] as $value) {
@@ -78,6 +78,6 @@ class AttributeValueMapper extends ProcessingFilter
         }
 
         $attributeUtils = new AttributeUtils();
-        $request['Attributes'] = $attributeUtils->mergeAndUniquify([$request['Attributes'], $mappedAttributes]);
+        $state['Attributes'] = $attributeUtils->mergeAndUniquify([$state['Attributes'], $mappedAttributes]);
     }
 }

@@ -18,19 +18,19 @@ class AttributeSplitter extends ProcessingFilter
      * The pattern to break the values on.
      * @var string
      */
-    private $delimiter = ',';
+    private string $delimiter;
 
     /**
      * The attribute names/keys that need their values split.
      * @var array
      */
-    private $attributes;
+    private array $attributes;
 
     public function __construct(&$config, $reserved)
     {
         parent::__construct($config, $reserved);
         $config = Configuration::loadFromArray($config);
-        $this->delimiter = $config->getString('delimiter', ',');
+        $this->delimiter = $config->getOptionalString('delimiter', ',');
         $this->attributes = $config->getArrayizeString('attributes');
     }
 
@@ -39,14 +39,14 @@ class AttributeSplitter extends ProcessingFilter
      *
      * When a filter returns from this function, it is assumed to have completed its task.
      *
-     * @param array &$request The request we are currently processing.
+     * @param array &$state The request we are currently processing.
      */
-    public function process(&$request)
+    public function process(array &$state): void
     {
-        if (!array_key_exists('Attributes', $request)) {
+        if (!array_key_exists('Attributes', $state)) {
             return;
         }
-        $requestAttributes = &$request['Attributes'];
+        $requestAttributes = &$state['Attributes'];
         foreach ($this->attributes as $attributeKey) {
             if (!array_key_exists($attributeKey, $requestAttributes)) {
                 continue;

@@ -133,7 +133,7 @@ class AdfsMetadataStrategyTest extends TestCase
     );
 
 
-    public function testAdfsHasAttributeAdjusted()
+    public function testAdfsHasAttributeAdjusted(): void
     {
         $adfsStrategy = new AdfsMetadataStrategy();
         $this->assertArrayNotHasKey('disable_scoping', $this->adfsMetadata);
@@ -147,7 +147,7 @@ class AdfsMetadataStrategyTest extends TestCase
         $this->assertEquals($this->adfsMetadata, $postMetadata, 'The rest of the metadata is unaltered');
     }
 
-    public function testAzureHasAttributeAdjusted()
+    public function testAzureHasAttributeAdjusted(): void
     {
         $adfsStrategy = new AdfsMetadataStrategy();
         $this->assertArrayNotHasKey('disable_scoping', $this->azureMetadata);
@@ -161,7 +161,7 @@ class AdfsMetadataStrategyTest extends TestCase
         $this->assertEquals($this->azureMetadata, $postMetadata, 'The rest of the metadata is unaltered');
     }
 
-    public function testNullHandled()
+    public function testNullHandled(): void
     {
         $adfsStrategy = new AdfsMetadataStrategy();
         $postMetadata = $adfsStrategy->modifyMetadata(
@@ -174,10 +174,11 @@ class AdfsMetadataStrategyTest extends TestCase
 
     /**
      * @dataProvider noAdjustmentProvider
+     *
      * @param array $metadata The metadata to test
      * @param string $set The set
      */
-    public function testNoAdjustmentsForNonAdfsOrNonIdpRemote($metadata, $set)
+    public function testNoAdjustmentsForNonAdfsOrNonIdpRemote($metadata, $set): void
     {
         $adfsStrategy = new AdfsMetadataStrategy();
         $postMetadata = $adfsStrategy->modifyMetadata($metadata, $metadata['entityid'], $set);
@@ -185,7 +186,7 @@ class AdfsMetadataStrategyTest extends TestCase
         $this->assertEquals($metadata, $postMetadata, 'The metadata is unaltered');
     }
 
-    public function noAdjustmentProvider()
+    public function noAdjustmentProvider(): array
     {
         return [
             [$this->adfsMetadata, 'some-set'],

@@ -2,10 +2,9 @@
 
 namespace Test\SimpleSAML\Auth\Process;
 
-use AspectMock\Test as test;
 use CirrusIdentity\SSP\Test\Capture\RedirectException;
 use CirrusIdentity\SSP\Test\InMemoryStore;
-use CirrusIdentity\SSP\Test\MockHttp;
+use CirrusIdentity\SSP\Test\MockHttpBuilder;
 use PHPUnit\Framework\TestCase;
 use SimpleSAML\Auth\ProcessingChain;
 use SimpleSAML\Auth\State;
@@ -24,19 +23,18 @@ class PromptAttributeReleaseTest extends TestCase
         ]
     ];
 
-    public function setup()
+    protected function setup(): void
     {
         putenv('SIMPLESAMLPHP_CONFIG_DIR=' . dirname(dirname(dirname(__DIR__))) . '/config');
-        MockHttp::throwOnRedirectTrustedURL();
+        $this->mockHttp = MockHttpBuilder::createHttpMockFromTestCase($this);
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         InMemoryStore::clearInternalState();
-        test::clean(); // remove all registered test doubles
     }
 
-    public function testUserHasNoAttributeToPrompt()
+    public function testUserHasNoAttributeToPrompt(): void
     {
         $expectedState = $this->state;
         $config = [
@@ -44,12 +42,13 @@ class PromptAttributeReleaseTest extends TestCase
             'labels' => []
         ];
         $filter = new PromptAttributeRelease($config, null);
+        $filter->setHttp($this->mockHttp);
         $filter->process($this->state);
         // Confirming the authproc did not do anything
         $this->assertEquals($expectedState, $this->state);
     }
 
-    public function testSingleValueDoesNotPrompt()
+    public function testSingleValueDoesNotPrompt(): void
     {
         $expectedState = $this->state;
         $config = [
@@ -57,12 +56,13 @@ class PromptAttributeReleaseTest extends TestCase
             'labels' => []
         ];
         $filter = new PromptAttributeRelease($config, null);
+        $filter->setHttp($this->mockHttp);
         $filter->process($this->state);
         // Confirming the authproc did not do anything
         $this->assertEquals($expectedState, $this->state);
     }
 
-    public function testNoValueDoesNotPrompt()
+    public function testNoValueDoesNotPrompt(): void
     {
         $expectedState = $this->state;
         $config = [
@@ -70,11 +70,15 @@ class PromptAttributeReleaseTest extends TestCase
             'labels' => []
         ];
         $filter = new PromptAttributeRelease($config, null);
+        $filter->setHttp($this->mockHttp);
         $filter->process($this->state);
         // Confirming the authproc did not do anything
         $this->assertEquals($expectedState, $this->state);
     }
 
+    /**
+     * @return void
+     */
     public function testThatPromptSetStateAndRedirects()
     {
         $expectedUrl = 'http://localhost/simplesaml/module.php/cirrusgeneral/prompt.php';
@@ -88,6 +92,7 @@ class PromptAttributeReleaseTest extends TestCase
         $filter = new PromptAttributeRelease($config, null);
         $stateId = null;
         try {
+            $filter->setHttp($this->mockHttp);
             $filter->process($this->state);
             $this->fail('Redirect exception expected');
         } catch (RedirectException $e) {
@@ -113,7 +118,7 @@ class PromptAttributeReleaseTest extends TestCase
         $this->assertEquals($expectedPromptState, $storedState['cirrusgeneral:prompt']);
     }
 
-    public function testHandleRequestNoState()
+    public function testHandleRequestNoState(): void
     {
         $this->expectException(NoState::class);
         $request = Request::create(
@@ -125,7 +130,7 @@ class PromptAttributeReleaseTest extends TestCase
         PromptAttributeRelease::handleRequest($request);
     }
 
-    public function testHandleRequestShowTemplate()
+    public function testHandleRequestShowTemplate(): void
     {
         // Setup existing state and process a request
         $stateId = $this->setRequestHandlerState();
@@ -159,16 +164,18 @@ class PromptAttributeReleaseTest extends TestCase
 
     /**
      * @dataProvider invalidSubmitProvider
+     *
      * @param string $expectedErrorMsg
      * @param string|null $attributeName
      * @param string|null $attributeValue
+     *
      * @throws \SimpleSAML\Error\BadRequest
      */
     public function testSubmitWithInvalidData(
         string $expectedErrorMsg,
         string $attributeName = null,
         string $attributeValue = null
-    ) {
+    ): void {
         // Setup existing state and process a request
         $stateId = $this->setRequestHandlerState();
         $queryParams = [
@@ -194,6 +201,9 @@ class PromptAttributeReleaseTest extends TestCase
         $this->assertEquals($expectedErrorMsg, $data['errorMessage']);
     }
 
+    /**
+     * @return void
+     */
     public function testValidSubmitFiltersAttributes()
     {
         // Setup existing state and process a request
