@@ -1,0 +1,41 @@
+{% set pagetitle = 'Attribute Prompt'|trans %}
+
+{% extends "base.twig" %}
+
+{% block content %}
+
+    {% set includeValueWithLabel =  displayAttributeValue ?? true %}
+    {% set defaultHeader = "prompt:header_attribute_default" | trans %}
+    {% set headerKey = "prompt:header_attribute_#{attributeName}" %}
+    {% set attributeSpecificHeader = headerKey | trans %}
+    {% set header = (attributeSpecificHeader == headerKey) ? defaultHeader :  attributeSpecificHeader %}
+
+    {% set defaultText = "prompt:text_attribute_single" | trans %}
+    {% set textKey = "prompt:text_attribute_#{attributeName}" %}
+    {% set attributeSpecificText = textKey | trans %}
+    {% set text = (attributeSpecificText == textKey) ? defaultText :  attributeSpecificText %}
+
+
+    <h1>{{ header }}</h1>
+    <p>{{ text }}</p>
+
+    {% if errorMessage ?? false %}
+        <div class="alert alert-danger">
+            <strong>Error</strong> {{ errorMessage }}
+        </div>
+    {% endif %}
+
+    {% for value in attributeValues %}
+        {% set label = value %}
+        {% if value in attributeLabels %}
+            {% set label =  includeValueWithLabel ? attributeLabels[value] ~ value : attributeLabels[value] %}
+        {% endif %}
+        {% set link=moduleURL('cirrusgeneral/prompt', {'StateId': stateId, 'name': attributeName, 'value': value}) %}
+        <a class="btn btn-default btn-lg btn-block"
+           href="{{ link }}">
+            {{ label }}
+        </a>
+    {% endfor %}
+
+
+{% endblock content %}

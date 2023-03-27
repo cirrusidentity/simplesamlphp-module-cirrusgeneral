@@ -18,6 +18,9 @@
 - [Conditional AuthProc Insertion](#conditional-authproc-insertion)
   - [PhpConditionalAuthProcInserter](#phpconditionalauthprocinserter)
 - [Development](#development)
+- [Exploring with Docker](#exploring-with-docker)
+  - [Things to try](#things-to-try)
+    - [Attribute prompt/picker](#attribute-promptpicker)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -298,3 +301,33 @@ Run `phpunit` to test
 You can auto correct some findings from phpcs. It is recommended you do this after stage your changes (or maybe even commit) since there is a non-trivial chance it will just mess up your code.
 
     ./vendor/bin/phpcbf
+
+# Exploring with Docker
+
+You can explore these features with Docker.
+
+```bash
+
+docker run -d --name ssp-cirrusgeneral \
+   --mount type=bind,source="$(pwd)",target=/var/simplesamlphp/staging-modules/cirrusgeneral,readonly \
+  -e STAGINGCOMPOSERREPOS=cirrusgeneral \
+  -e COMPOSER_REQUIRE="cirrusidentity/simplesamlphp-module-cirrusgeneral:@dev" \
+  -e SSP_ENABLED_MODULES="cirrusgeneral" \
+  --mount type=bind,source="$(pwd)/tests/docker/metadata/",target=/var/simplesamlphp/metadata/,readonly \
+  --mount type=bind,source="$(pwd)/tests/docker/authsources.php",target=/var/simplesamlphp/config/authsources.php,readonly \
+  --mount type=bind,source="$(pwd)/tests/docker/config-override.php",target=/var/simplesamlphp/config/config-override.php,readonly \
+  --mount type=bind,source="$(pwd)/tests/docker/cert/",target=/var/simplesamlphp/cert/,readonly \
+   -p 443:443 cirrusid/simplesamlphp:v2.0.0
+```
+
+Then log in as `admin:secret` to https://cirrusgeneral.local.stack-dev.cirrusidentity.com/simplesaml/module.php/core/frontpage_welcome.php
+to confirm things work.
+
+## Things to try
+
+### Attribute prompt/picker
+
+The Idp has the `PromptAttributeRelease` authproc filter enabled for the `eduPersonAffiliation` attribute.
+If a user has more than one value they will need to pick which value to release. See `authsources.php` for the available users.
+To make the IdP run it's authproc filters you need to send a login from an SP, and the [sp-auth source](https://cirrusgeneral.local.stack-dev.cirrusidentity.com/simplesaml/module.php/admin/test/sp-auth)
+will do that login.
