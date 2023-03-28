@@ -11,6 +11,7 @@ use SimpleSAML\Module\cirrusgeneral\Controller\Prompt;
 use SimpleSAML\Session;
 use SimpleSAML\XHTML\Template;
 use Symfony\Component\HttpFoundation\Request;
+use tidy;
 
 class PromptTest extends TestCase
 {
@@ -22,7 +23,7 @@ class PromptTest extends TestCase
     {
         self::$postProcessingChainState = null;
         Configuration::clearInternalState();
-        $this->prompt = new Prompt(Configuration::getInstance(), $this->createMock(Session::class));
+        $this->prompt = new Prompt(Configuration::getInstance());
     }
     public function testHandleRequestNoState(): void
     {
@@ -58,6 +59,10 @@ class PromptTest extends TestCase
             'val3' => 'ValueB'
         ], $data['attributeLabels']);
         $this->assertArrayNotHasKey('errorMessage', $data);
+
+        $html = $response->getContents();
+        // SSP2's default header has a warning
+        $this->assertTrue($this->verifyHtml($html, 1));
     }
 
     public function invalidSubmitProvider(): array
@@ -108,6 +113,10 @@ class PromptTest extends TestCase
             'val3' => 'ValueB'
         ], $data['attributeLabels']);
         $this->assertEquals($expectedErrorMsg, $data['errorMessage']);
+
+        $html = $response->getContents();
+        // SSP2's default header has a warning
+        $this->assertTrue($this->verifyHtml($html, 1));
     }
 
     /**
@@ -156,6 +165,7 @@ class PromptTest extends TestCase
             ],
             // Handle continuing processing of chain after valid submission
             '\SimpleSAML\Auth\ProcessingChain.filters' => [],
+            // Work around for confirming processhing chain completes
             'ReturnCall' => [self::class, 'processingChainComplete']
         ];
         $stateId = State::saveState($state, PromptAttributeRelease::$STATE_STAGE);
@@ -166,5 +176,22 @@ class PromptTest extends TestCase
     {
         self::$postProcessingChainState = $state;
         throw new \Exception('Processing Chain Complete');
+    }
+
+    public static function verifyHtml(string $html, int $allowedWarnings = 0): bool
+    {
+        $config = array(
+            'indent' => true,
+            'indent-spaces' => 4,
+            'doctype' => 'html5',
+        );
+        $tidy = new tidy();
+        $tidy->parseString($html, $config);
+        //$tidy->cleanRepair();
+        $tidy->diagnose();
+        echo "tidy:" . $tidy->errorBuffer;
+        $warnings = max(0, tidy_warning_count($tidy) - $allowedWarnings);
+        $count = tidy_error_count($tidy) + $warnings;
+        return $count == 0;
     }
 }

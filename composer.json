@@ -15,7 +15,10 @@
     "require-dev": {
         "phpunit/phpunit": "^9.5",
         "cirrusidentity/simplesamlphp-test-utils": "v2.x-dev",
-        "simplesamlphp/simplesamlphp-test-framework": "^1"
+        "simplesamlphp/simplesamlphp-test-framework": "^1",
+        "ext-tidy": "*",
+        "squizlabs/php_codesniffer": "*",
+        "vimeo/psalm": "^5.8"
     },
     "autoload-dev": {
         "psr-4": {

@@ -19,9 +19,6 @@ class Prompt
     /** @var Configuration */
     protected Configuration $config;
 
-    /** @var Session */
-    protected Session $session;
-
 
     /**
      * Controller constructor.
@@ -29,16 +26,13 @@ class Prompt
      * It initializes the global configuration and session for the controllers implemented here.
      *
      * @param Configuration $config The configuration to use.
-     * @param Session $session The current user session.
      *
      * @throws \Exception
      */
     public function __construct(
-        Configuration $config,
-        Session $session
+        Configuration $config
     ) {
         $this->config = $config;
-        $this->session = $session;
     }
 
     /**

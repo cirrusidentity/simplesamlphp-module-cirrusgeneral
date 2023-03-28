@@ -302,6 +302,11 @@ You can auto correct some findings from phpcs. It is recommended you do this aft
 
     ./vendor/bin/phpcbf
 
+Run psalm to find issues
+
+    ./vendor/bin/psalm   --no-cache
+
+
 # Exploring with Docker
 
 You can explore these features with Docker.
