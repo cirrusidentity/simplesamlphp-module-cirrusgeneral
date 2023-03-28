@@ -26,7 +26,11 @@
 
 # Installation
 
-    composer require cirrusidentity/simplesamlphp-module-cirrusgeneral
+For SSP 2, use version 3 of the module
+
+    composer require cirrusidentity/simplesamlphp-module-cirrusgeneral:v3.0.0-alpha.1
+
+For SSP 1.X use version 2 of the module
 
 # ModifyingMetadataSource
 
