@@ -1,0 +1,3 @@
+cirrusgeneral-prompt:
+  path:       /prompt
+  defaults:   { _controller: 'SimpleSAML\Module\cirrusgeneral\Controller\Prompt::prompt' }

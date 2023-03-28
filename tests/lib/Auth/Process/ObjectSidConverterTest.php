@@ -60,7 +60,7 @@ class ObjectSidConverterTest extends TestCase
         $this->assertEquals($this->b641 . '==', $state['Attributes']['b64sid'][0]);
     }
 
-    public function testNoAttributeIsNoop()
+    public function testNoAttributeIsNoop(): void
     {
         $state = [
             'Attributes' => [

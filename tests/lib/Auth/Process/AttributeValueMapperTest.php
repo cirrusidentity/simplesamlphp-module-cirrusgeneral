@@ -7,12 +7,12 @@ use SimpleSAML\Module\cirrusgeneral\Auth\Process\AttributeValueMapper;
 
 class AttributeValueMapperTest extends TestCase
 {
-    public function setup()
+    protected function setup(): void
     {
-        putenv('SIMPLESAMLPHP_CONFIG_DIR=' . dirname(dirname(dirname(__DIR__))) . '/config');
+        putenv('SIMPLESAMLPHP_CONFIG_DIR=' . dirname(__DIR__, 3) . '/config');
     }
 
-    public function testValueMap()
+    public function testValueMap(): void
     {
         $config = [
             // Files with main mappings

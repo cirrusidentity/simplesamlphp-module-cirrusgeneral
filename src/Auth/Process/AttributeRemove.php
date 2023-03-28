@@ -31,22 +31,22 @@ class AttributeRemove extends ProcessingFilter
     {
         parent::__construct($config, $reserved);
         $config = Configuration::loadFromArray($config);
-        $this->attributes = $config->getArrayizeString('attributes', []);
-        $this->attributeRegexes = $config->getArrayizeString('attributeRegexes', []);
+        $this->attributes = $config->getOptionalArrayizeString('attributes', []);
+        $this->attributeRegexes = $config->getOptionalArrayizeString('attributeRegexes', []);
     }
 
     /**
      * @inheritDoc
      */
-    public function process(&$request)
+    public function process(array &$state): void
     {
-        $request['Attributes'] = array_diff_key($request['Attributes'], array_flip($this->attributes));
+        $state['Attributes'] = array_diff_key($state['Attributes'], array_flip($this->attributes));
 
         foreach ($this->attributeRegexes as $regex) {
-            foreach ($request['Attributes'] as $attributeName => $values) {
+            foreach ($state['Attributes'] as $attributeName => $values) {
                 $result = @preg_match($regex, $attributeName);
                 if ($result === 1) {
-                    unset($request['Attributes'][$attributeName]);
+                    unset($state['Attributes'][$attributeName]);
                 } elseif ($result === false) {
                     Logger::WARNING("AttributeRemove: invalid regex '$regex' " . preg_last_error_msg());
                 }

@@ -2,9 +2,7 @@
 
 namespace SimpleSAML\Module\cirrusgeneral\Auth\Process;
 
-use SimpleSAML\Auth\ProcessingFilter;
 use SimpleSAML\Configuration;
-use SimpleSAML\Module\cirrusgeneral\Auth\AuthProcRuleInserter;
 
 /**
  * Conditionally create new authproc filters at the location of this filter

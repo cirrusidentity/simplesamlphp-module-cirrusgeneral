@@ -34,7 +34,7 @@ class ObjectSidConverter extends ProcessingFilter
         $config = Configuration::loadFromArray($config);
         $this->source = $config->getString('source');
         $this->destination = $config->getString('destination');
-        $this->toFormattedSid = $config->getBoolean('toFormattedSid', false);
+        $this->toFormattedSid = $config->getOptionalBoolean('toFormattedSid', false);
     }
 
     /**
@@ -42,16 +42,16 @@ class ObjectSidConverter extends ProcessingFilter
      *
      * When a filter returns from this function, it is assumed to have completed its task.
      *
-     * @param array &$request The request we are currently processing.
+     * @param array &$state The request we are currently processing.
      */
-    public function process(&$request)
+    public function process(array &$state): void
     {
-        $attribute = $request['Attributes'][$this->source][0] ?? null;
+        $attribute = $state['Attributes'][$this->source][0] ?? null;
         if (empty($attribute)) {
             return;
         }
         $value = $this->toFormattedSid ? self::convertToFormattedSid($attribute) : self::convertToBase64($attribute);
-        $request['Attributes'][$this->destination] = [$value];
+        $state['Attributes'][$this->destination] = [$value];
     }
 
     public static function convertToBase64(string $value): string

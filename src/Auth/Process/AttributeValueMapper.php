@@ -17,15 +17,15 @@ class AttributeValueMapper extends ProcessingFilter
 {
     /**
      * The csv to use in mapping
-     * @var string
+     * @var ?string
      */
-    private $fileName;
+    private ?string $fileName;
 
     /**
      * Look up mappings
      * @var array
      */
-    private $mappingLookup = [];
+    private array $mappingLookup = [];
 
     /**
      * AttributeValueMapper constructor.
@@ -34,8 +34,8 @@ class AttributeValueMapper extends ProcessingFilter
     {
         parent::__construct($config, $reserved);
         $config = Configuration::loadFromArray($config);
-        $this->fileName = $config->getString('csvFile', null);
-        $this->mappingLookup = $config->getArray('mappingLookup', []);
+        $this->fileName = $config->getOptionalString('csvFile', null);
+        $this->mappingLookup = $config->getOptionalArray('mappingLookup', []);
     }
 
 
@@ -44,9 +44,9 @@ class AttributeValueMapper extends ProcessingFilter
      *
      * When a filter returns from this function, it is assumed to have completed its task.
      *
-     * @param array &$request The request we are currently processing.
+     * @param array &$state The request we are currently processing.
      */
-    public function process(&$request)
+    public function process(array &$state): void
     {
         if (isset($this->fileName)) {
             $csv = fopen($this->fileName, "r");
@@ -61,7 +61,7 @@ class AttributeValueMapper extends ProcessingFilter
             fclose($csv);
         }
         $mappedAttributes = [];
-        $attributes = $request['Attributes'];
+        $attributes = $state['Attributes'];
         foreach ($this->mappingLookup as $sourceAttribute => $mapTargets) {
             if (array_key_exists($sourceAttribute, $attributes)) {
                 foreach ($attributes[$sourceAttribute] as $value) {
@@ -78,6 +78,6 @@ class AttributeValueMapper extends ProcessingFilter
         }
 
         $attributeUtils = new AttributeUtils();
-        $request['Attributes'] = $attributeUtils->mergeAndUniquify([$request['Attributes'], $mappedAttributes]);
+        $state['Attributes'] = $attributeUtils->mergeAndUniquify([$state['Attributes'], $mappedAttributes]);
     }
 }

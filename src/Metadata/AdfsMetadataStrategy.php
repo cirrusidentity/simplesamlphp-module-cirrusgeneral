@@ -8,18 +8,19 @@ namespace SimpleSAML\Module\cirrusgeneral\Metadata;
  */
 class AdfsMetadataStrategy implements MetadataModifyStrategy
 {
-    private $adfsPattern = '|/adfs/|';
-    private $azurePattern = '|^https://sts.windows.net/|';
+    private string $adfsPattern = '|/adfs/|';
+    private string $azurePattern = '|^https://sts.windows.net/|';
 
     /**
      * Adjust certain operational attributes for metadata deemed to be from ADFS.
      * Example: disable sending scope element to ADFS
-     * @param array $metadata The existing metadata
+     * @param ?array $metadata The existing metadata
      * @param string $entityId The entity id that is being loaded
      * @param string $set The metadata set
      * @return array|null The new metadata or null if there is none
+     * @psalm-return ($metadata is array ? array : null)
      */
-    public function modifyMetadata($metadata, $entityId, $set)
+    public function modifyMetadata(?array $metadata, string $entityId, string $set): ?array
     {
         if ($metadata == null) {
             return $metadata;
@@ -35,14 +36,14 @@ class AdfsMetadataStrategy implements MetadataModifyStrategy
         return $metadata;
     }
 
-    private function makeAdfsAdjustments($metadata)
+    private function makeAdfsAdjustments(array $metadata): array
     {
         // ADFS doesn't like the scoping xml in an AuthnRequest
         $metadata['disable_scoping'] = true;
         return $metadata;
     }
 
-    private function makeAzureAdjustments($metadata)
+    private function makeAzureAdjustments(array $metadata): array
     {
         // Azure can handle scoping xml in an AuthnRequest however it can error if the SP
         // entity ID is not a valid uri (which isn't a SAML spec requirement).

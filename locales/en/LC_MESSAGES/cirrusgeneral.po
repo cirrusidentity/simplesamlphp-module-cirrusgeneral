@@ -1,0 +1,12 @@
+
+msgid "prompt:header_attribute_default"
+msgstr "Select Value to Use"
+
+msgid "prompt:text_attribute_single"
+msgstr "The application requires you to pick which one to use."
+
+msgid "prompt:header_attribute_sampleAttributeForMsgOverride"
+msgstr "Example of header customization for this attribute"
+
+msgid "prompt:text_attribute_sampleAttributeForMsgOverride"
+msgstr "Example of text customization for attribute sampleAttributeForMsgOverride"

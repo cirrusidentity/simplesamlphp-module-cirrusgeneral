@@ -16,12 +16,12 @@ class AttributeRemoveTest extends TestCase
             'prefix.attr2' => ['val5']
         ]
     ];
-    public function setup()
+    protected function setup(): void
     {
         putenv('SIMPLESAMLPHP_CONFIG_DIR=' . dirname(dirname(dirname(__DIR__))) . '/config');
     }
 
-    public function testNoAttributesToRemove()
+    public function testNoAttributesToRemove(): void
     {
 
         $config = [
@@ -33,7 +33,7 @@ class AttributeRemoveTest extends TestCase
         $this->assertEquals($this->initialState, $state);
     }
 
-    public function testAttributesToRemoveNoMatch()
+    public function testAttributesToRemoveNoMatch(): void
     {
 
         $config = [
@@ -45,7 +45,7 @@ class AttributeRemoveTest extends TestCase
         $this->assertEquals($this->initialState, $state);
     }
 
-    public function testRemoveAllAttributes()
+    public function testRemoveAllAttributes(): void
     {
 
         $config = [
@@ -57,7 +57,7 @@ class AttributeRemoveTest extends TestCase
         $this->assertEquals([], $state['Attributes']);
     }
 
-    public function testRemoveSingleAttribute()
+    public function testRemoveSingleAttribute(): void
     {
 
         $config = [
@@ -70,7 +70,7 @@ class AttributeRemoveTest extends TestCase
         $this->assertArrayNotHasKey('attr2', $state['Attributes']);
     }
 
-    public function testRemoveByRegex()
+    public function testRemoveByRegex(): void
     {
         $config = [
             'attributeRegexes' => ['/^prefix\./', 'bad-regex-does-nothing']
