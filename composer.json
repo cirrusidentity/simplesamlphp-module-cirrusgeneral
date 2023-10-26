@@ -10,7 +10,7 @@
     "require": {
         "php" : ">=7.4",
         "simplesamlphp/composer-module-installer": "^1.1",
-        "simplesamlphp/simplesamlphp": "~2.0.0"
+        "simplesamlphp/simplesamlphp": "^2.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.5",
