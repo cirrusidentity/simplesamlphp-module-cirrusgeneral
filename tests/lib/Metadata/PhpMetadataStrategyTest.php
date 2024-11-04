@@ -15,31 +15,31 @@ class PhpMetadataStrategyTest extends TestCase
 
         'metadata-set' => 'saml20-sp-remote',
         'AssertionConsumerService' =>
-            array(
+            [
                 0 =>
-                    array(
+                    [
                         'Binding' => 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST',
                         'Location' => 'https://someapp.com/auth/saml/callback',
                         'index' => 0,
                         'isDefault' => true,
-                    ),
-            ),
+                    ],
+            ],
             'SingleLogoutService' =>
-            array(
+            [
                 0 =>
-                    array(
+                    [
                         'Binding' => 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST',
                         'Location' => 'https://someapp.com/auth/sign_out',
-                    ),
-            ),
+                    ],
+            ],
             'NameIDFormat' => 'urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified',
             'attributes' =>
-            array(
+            [
                 0 => 'name',
                 1 => 'last_name',
                 2 => 'first_name',
                 3 => 'email',
-            ),
+            ],
             'attributes.NameFormat' => 'urn:oasis:names:tc:SAML:2.0:attrname-format:basic',
     ];
 

@@ -44,6 +44,7 @@ class AttributeRemove extends ProcessingFilter
 
         foreach ($this->attributeRegexes as $regex) {
             foreach ($state['Attributes'] as $attributeName => $values) {
+                /** @psalm-suppress  ArgumentTypeCoercion */
                 $result = @preg_match($regex, $attributeName);
                 if ($result === 1) {
                     unset($state['Attributes'][$attributeName]);

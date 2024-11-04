@@ -28,8 +28,10 @@ class AdfsMetadataStrategy implements MetadataModifyStrategy
         if ($set !== 'saml20-idp-remote') {
             return $metadata;
         }
+        /** @psalm-suppress  ArgumentTypeCoercion */
         if (preg_match($this->adfsPattern, $entityId) === 1) {
             return $this->makeAdfsAdjustments($metadata);
+        /** @psalm-suppress  ArgumentTypeCoercion */
         } elseif (preg_match($this->azurePattern, $entityId) === 1) {
             return $this->makeAzureAdjustments($metadata);
         }

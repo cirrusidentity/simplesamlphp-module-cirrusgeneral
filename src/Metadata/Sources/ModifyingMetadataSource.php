@@ -4,9 +4,11 @@ namespace SimpleSAML\Module\cirrusgeneral\Metadata\Sources;
 
 use SimpleSAML\Configuration;
 use SimpleSAML\Error\CriticalConfigurationError;
+use SimpleSAML\Logger;
 use SimpleSAML\Metadata\MetaDataStorageSource;
 use SimpleSAML\Module;
 use SimpleSAML\Module\cirrusgeneral\Metadata\MetadataModifyStrategy;
+use SimpleSAML\Utils;
 
 /**
  * Metadata source that can delegate to other sources and then adjust the loaded metadata
@@ -36,9 +38,63 @@ class ModifyingMetadataSource extends MetaDataStorageSource
         $this->delegateSources = MetaDataStorageSource::parseSources($config->getArray('sources'));
     }
 
+    /**
+     * This function loads the metadata for entity IDs in $entityIds. It is returned as an associative array
+     * where the key is the entity id. An empty array may be returned if no matching entities were found.
+     * Subclasses should override if their getMetadataSet returns nothing or is slow. Subclasses may want to
+     * delegate to getMetaDataForEntitiesIndividually if loading entities one at a time is faster.
+     * @param string[] $entityIds The entity ids to load
+     * @param string $set The set we want to get metadata from.
+     * @return array An associative array with the metadata for the requested entities, if found.
+     */
+    public function getMetaDataForEntities(array $entityIds, string $set): array
+    {
+        if (empty($entityIds)) {
+            return [];
+        }
+
+        $result = [];
+
+        $entityIdsFlipped = array_flip($entityIds);
+        $timeUtils = new Utils\Time();
+
+        // We do not want to call the getMetdataSet here. If we do we will create an overload
+        // since we will have to first load all the sources and then do any of the desired calculations.
+        // Our take is to do the calculations as we go and break as soon as we do not have anything more to
+        // calculate
+        foreach ($this->delegateSources as $source) {
+            // entityIds may be reduced to being empty in this loop or already empty
+            if (empty($entityIds)) {
+                break;
+            }
+
+            $entities = $source->getMetadataSet($set);
+
+            $srcList = array_intersect_key($entities, $entityIdsFlipped);
+            foreach ($srcList as $key => $le) {
+                if (!empty($le['expire']) && $le['expire'] < time()) {
+                    unset($srcList[$key]);
+                    Logger::warning(
+                        'Dropping metadata entity ' . var_export($key, true) . ', expired ' .
+                        $timeUtils->generateTimestamp($le['expire']) . '.',
+                    );
+                    continue;
+                }
+                // We found the entity id so remove it from the list that needs resolving
+                /** @psalm-suppress PossiblyInvalidArrayOffset */
+                unset($entityIds[$entityIdsFlipped[$key]], $entityIdsFlipped[$key]);
+                /** @psalm-suppress PossiblyInvalidArrayOffset */
+                // Add the key to the result set
+                $result[$key] = $le;
+            }
+        }
+
+        return $result;
+    }
+
     public function getMetadataSet(string $set): array
     {
-        $result = array();
+        $result = [];
 
         foreach ($this->delegateSources as $source) {
             $srcList = $source->getMetadataSet($set);

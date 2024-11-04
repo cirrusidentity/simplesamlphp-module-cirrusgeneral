@@ -27,7 +27,7 @@ class PhpConditionalAuthProcInserterTest extends TestCase
             'authproc' => [
                 [
                     'class' => 'core:AttributeAdd',
-                    'source' => array('myidp'),
+                    'source' => ['myidp'],
                 ],
             ]
         ];

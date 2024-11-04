@@ -14,57 +14,57 @@ class OverridingMetadataStrategyTest extends TestCase
         'entityid' => 'http://nomatch.example.edu/adfs/services/trust',
         'metadata-set' => 'saml20-idp-remote',
         'NameIDFormats' =>
-            array(
+            [
                 0 => 'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress',
-            ),
+            ],
     ];
 
     private $metadata = [
         'entityid' => 'http://idp.example.edu/adfs/services/trust',
         'metadata-set' => 'saml20-idp-remote',
         'SingleSignOnService' =>
-            array(
+            [
                 0 =>
-                    array(
+                    [
                         'Binding' => 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect',
                         'Location' => 'https://stsdev.example.edu/SSO',
-                    ),
-            ),
+                    ],
+            ],
             'SingleLogoutService' =>
-            array(
+            [
                 0 =>
-                    array(
+                    [
                         'Binding' => 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect',
                         'Location' => 'https://stsdev.example.edu/SLO',
-                    ),
-            ),
+                    ],
+            ],
             'NameIDFormats' =>
-            array(
+            [
                 0 => 'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress',
                 1 => 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
                 2 => 'urn:oasis:names:tc:SAML:2.0:nameid-format:transient',
-            ),
+            ],
             'keys' =>
-            array(
+            [
                 0 =>
-                    array(
+                    [
                         'encryption' => true,
                         'signing' => false,
                         'type' => 'X509Certificate',
                         'X509Certificate' => 'MIIC3jCCAcagAwsomekey'
-                    ),
+                    ],
                 1 =>
-                    array(
+                    [
                         'encryption' => false,
                         'signing' => true,
                         'type' => 'X509Certificate',
                         'X509Certificate' => 'MIIC2DCCAcCgAwsomekey'
-                    ),
-            )
+                    ],
+            ]
     ];
 
     private $config = [
-        'source' => array('type' => 'flatfile', 'directory' => __DIR__ . '/Sources/overrideMetadata'),
+        'source' => ['type' => 'flatfile', 'directory' => __DIR__ . '/Sources/overrideMetadata'],
 
     ];
 

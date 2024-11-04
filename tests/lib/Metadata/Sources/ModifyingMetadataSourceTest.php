@@ -14,14 +14,14 @@ class ModifyingMetadataSourceTest extends TestCase
             [
                 'type' => 'SimpleSAML\Module\cirrusgeneral\Metadata\Sources\ModifyingMetadataSource',
                 'sources' => [
-                    array('type' => 'flatfile', 'directory' => __DIR__ . '/testMetadata'),
-                    array('type' => 'flatfile', 'directory' => __DIR__ . '/testMetadata2'),
+                    ['type' => 'flatfile', 'directory' => __DIR__ . '/testMetadata'],
+                    ['type' => 'flatfile', 'directory' => __DIR__ . '/testMetadata2'],
                 ],
                 'strategies' => [
                     ['type' => 'SimpleSAML\Module\cirrusgeneral\Metadata\AdfsMetadataStrategy'],
                     [
                         'type' => 'SimpleSAML\Module\cirrusgeneral\Metadata\OverridingMetadataStrategy',
-                        'source' => array('type' => 'flatfile', 'directory' => __DIR__ . '/overrideMetadata'),
+                        'source' => ['type' => 'flatfile', 'directory' => __DIR__ . '/overrideMetadata'],
                     ],
                     [
                         'type' => 'SimpleSAML\Module\cirrusgeneral\Metadata\PhpMetadataStrategy',
@@ -78,6 +78,26 @@ class ModifyingMetadataSourceTest extends TestCase
         $handler->getMetaData(
             'http://no-such-entry',
             'saml20-idp-remote'
+        );
+    }
+
+    public function testLoadMetadataEntities(): void
+    {
+        $entityIds = [
+            'http://alt.example.edu/adfs/services/trust',
+            'http://idp.example.edu/adfs/services/trust'
+        ];
+        // Set the config to to use
+        Configuration::loadFromArray($this->config, '[ARRAY]', 'simplesaml');
+        $handler = MetaDataStorageHandler::getMetadataHandler();
+        $metadataSet = $handler->getMetaDataForEntities($entityIds, 'saml20-idp-remote');
+
+        $this->assertArrayHasKey('http://idp.example.edu/adfs/services/trust', $metadataSet);
+        $this->assertArrayHasKey('http://alt.example.edu/adfs/services/trust', $metadataSet);
+
+        $this->assertEquals(
+            'https://idp.example.eduadfs/ls/',
+            $metadataSet['http://idp.example.edu/adfs/services/trust']['SingleSignOnService'][0]['Location']
         );
     }
 }
