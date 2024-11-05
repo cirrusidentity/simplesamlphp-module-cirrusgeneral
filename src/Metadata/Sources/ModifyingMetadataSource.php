@@ -58,19 +58,13 @@ class ModifyingMetadataSource extends MetaDataStorageSource
         $entityIdsFlipped = array_flip($entityIds);
         $timeUtils = new Utils\Time();
 
-        // We do not want to call the getMetdataSet here. If we do we will create an overload
-        // since we will have to first load all the sources and then do any of the desired calculations.
-        // Our take is to do the calculations as we go and break as soon as we do not have anything more to
-        // calculate
         foreach ($this->delegateSources as $source) {
             // entityIds may be reduced to being empty in this loop or already empty
             if (empty($entityIds)) {
                 break;
             }
 
-            $entities = $source->getMetadataSet($set);
-
-            $srcList = array_intersect_key($entities, $entityIdsFlipped);
+            $srcList = $source->getMetaDataForEntities($entityIds, $set);
             foreach ($srcList as $key => $le) {
                 if (!empty($le['expire']) && $le['expire'] < time()) {
                     unset($srcList[$key]);
@@ -82,7 +76,7 @@ class ModifyingMetadataSource extends MetaDataStorageSource
                 }
                 // We found the entity id so remove it from the list that needs resolving
                 /** @psalm-suppress PossiblyInvalidArrayOffset */
-                unset($entityIds[$entityIdsFlipped[$key]], $entityIdsFlipped[$key]);
+                unset($entityIds[$entityIdsFlipped[$key]]);
                 /** @psalm-suppress PossiblyInvalidArrayOffset */
                 // Add the key to the result set
                 $result[$key] = $le;
