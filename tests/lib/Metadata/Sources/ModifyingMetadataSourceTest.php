@@ -85,7 +85,8 @@ class ModifyingMetadataSourceTest extends TestCase
     {
         $entityIds = [
             'http://alt.example.edu/adfs/services/trust',
-            'http://idp.example.edu/adfs/services/trust'
+            'http://idp.example.edu/adfs/services/trust',
+            'http://idp.example.edu/adfs/services/notexist'
         ];
         // Set the config to to use
         Configuration::loadFromArray($this->config, '[ARRAY]', 'simplesaml');
@@ -94,6 +95,7 @@ class ModifyingMetadataSourceTest extends TestCase
 
         $this->assertArrayHasKey('http://idp.example.edu/adfs/services/trust', $metadataSet);
         $this->assertArrayHasKey('http://alt.example.edu/adfs/services/trust', $metadataSet);
+        $this->assertCount(2, $metadataSet);
 
         $this->assertEquals(
             'https://idp.example.eduadfs/ls/',
