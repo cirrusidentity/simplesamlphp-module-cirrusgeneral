@@ -1,11 +1,11 @@
 <?php
 
-$config = array(
+$config = [
 
     // This is a authentication source which handles admin authentication.
-    'admin' => array(
+    'admin' => [
         'core:AdminPassword',
-    ),
+    ],
 
     'idp-auth' => [
         'exampleauth:UserPass',
@@ -34,4 +34,4 @@ $config = array(
         'entityID' => 'https://cirrusgeneral.local.stack-dev.cirrusidentity.com/simplesaml/module.php/saml/sp/metadata.php/sp-auth',
         'idp' => 'https://cirrusgeneral.local.stack-dev.cirrusidentity.com/simplesaml/saml2/idp/metadata.php'
     ]
-);
+];

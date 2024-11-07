@@ -126,10 +126,10 @@ class ConditionalSetAuthnContextTest extends \PHPUnit\Framework\TestCase
         ];
 
         if ($spEntityId) {
-            $state['Destination'] = array(
+            $state['Destination'] = [
                 'metadata-set' => 'saml20-sp-remote',
                 'entityid' => $spEntityId,
-            );
+            ];
         }
 
         $config = [

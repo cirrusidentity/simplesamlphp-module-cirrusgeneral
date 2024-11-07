@@ -42,7 +42,7 @@ class AuthProcRuleInserterTest extends TestCase
         $authProcsConfigs = [
             [
                 'class' => 'core:AttributeAdd',
-                'source' => array('myidp'),
+                'source' => ['myidp'],
             ],
             [
                 'class' => 'cirrusgeneral:AttributeRemove',

@@ -180,11 +180,11 @@ class PromptTest extends TestCase
 
     public static function verifyHtml(string $html, int $allowedWarnings = 0): bool
     {
-        $config = array(
+        $config = [
             'indent' => true,
             'indent-spaces' => 4,
             'doctype' => 'html5',
-        );
+        ];
         $tidy = new tidy();
         $tidy->parseString($html, $config);
         //$tidy->cleanRepair();
