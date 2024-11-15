@@ -4,6 +4,7 @@ namespace SimpleSAML\Module\cirrusgeneral\Metadata\Sources;
 
 use SimpleSAML\Configuration;
 use SimpleSAML\Error\CriticalConfigurationError;
+use SimpleSAML\Logger;
 use SimpleSAML\Metadata\MetaDataStorageSource;
 use SimpleSAML\Module;
 use SimpleSAML\Module\cirrusgeneral\Metadata\MetadataModifyStrategy;
@@ -51,6 +52,45 @@ class ModifyingMetadataSource extends MetaDataStorageSource
         // or if doing that to an entire set would be too computationally expensive
         return $result;
     }
+
+    public function getMetaDataForEntities(array $entityIds, $set): array
+    {
+        if (empty($entityIds)) {
+            return [];
+        }
+
+        $result = [];
+
+        $entityIdsFlipped = array_flip($entityIds);
+
+        foreach ($this->delegateSources as $source) {
+            // entityIds may be reduced to being empty in this loop or already empty
+            if (empty($entityIds)) {
+                break;
+            }
+
+            $srcList = $source->getMetaDataForEntities($entityIds, $set);
+            foreach ($srcList as $key => $le) {
+                if (!empty($le['expire']) && $le['expire'] < time()) {
+                    unset($srcList[$key]);
+                    Logger::warning(
+                        "Dropping metadata entity " . var_export($key, true) . ", expired " .
+                        Utils\Time::generateTimestamp($le['expire']) . "."
+                    );
+                    continue;
+                }
+                // We found the entity id so remove it from the list that needs resolving
+                /** @psalm-suppress PossiblyInvalidArrayOffset */
+                unset($entityIds[$entityIdsFlipped[$key]]);
+                /** @psalm-suppress PossiblyInvalidArrayOffset */
+                // Add the key to the result set
+                $result[$key] = $le;
+            }
+        }
+
+        return $result;
+    }
+
 
 
     public function getMetaData($index, $set)
