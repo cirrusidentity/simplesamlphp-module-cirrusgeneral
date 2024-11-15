@@ -168,7 +168,10 @@ would allow user to select which of their affiliations to release.
              'student' => 'Student Role',
              'member'  => 'Generic Role'
              // any other values don't get a label and are shown as the plain value in the UI
-         ]
+         ],
+         // optional: use a user attribute as the source of labels. It must have the same
+         // amount of elements as the attribute with the values
+         'labelsFromAttribute' => 'affilDescriptions',
          // optional: should the attribute value be shown after the label? defaults to true
          'displayAttributeValue' => false
 ```

@@ -25,8 +25,10 @@ class PromptAttributeRelease extends ProcessingFilter
     public static string $STATE_STAGE = 'prompt:request';
 
     private string $attributeName;
+
     private bool $displayAttributeValue;
     private array $labels;
+    private ?string $labelsFromAttribute = null;
 
     public function __construct(&$config, $reserved)
     {
@@ -35,6 +37,8 @@ class PromptAttributeRelease extends ProcessingFilter
         $this->attributeName = $config->getString('attribute');
         $this->displayAttributeValue = $config->getBoolean('displayAttributeValue', true);
         $this->labels = $config->getArray('labels', []);
+        $this->labelsFromAttribute = $config->getString('labelsFromAttribute', null);
+
     }
 
     public function process(&$state)
@@ -48,6 +52,27 @@ class PromptAttributeRelease extends ProcessingFilter
         if (count($attributes[$this->attributeName]) <= 1) {
             // User has a single value, no need to prompt
             return;
+        }
+
+        if (is_string($this->labelsFromAttribute)) {
+            if (array_key_exists($this->labelsFromAttribute, $state['Attributes'])) {
+                $labelValues = $attributes[$this->labelsFromAttribute];
+                $attributeValues = $attributes[$this->attributeName];
+                try {
+                    $labelMap = array_combine($attributeValues, $labelValues);
+                    if ($labelMap === false) {
+                        Logger::info('Label and attributes have different number of values. Not setting labels');
+                    } else {
+                        $this->labels = $labelMap;
+                    }
+                } catch (\Exception $ex) {
+                    // array_combine throws error in php8 if arrays not the same size
+                    Logger::info('Label and attributes have different number of values. Not setting labels');
+                }
+
+            } else {
+                Logger::info('User does not have prompt label attribute ' . $this->labelsFromAttribute);
+            }
         }
 
         $promptState = [

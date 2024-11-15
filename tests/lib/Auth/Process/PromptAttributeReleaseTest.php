@@ -75,6 +75,79 @@ class PromptAttributeReleaseTest extends TestCase
         $this->assertEquals($expectedState, $this->state);
     }
 
+    public static function  attributeAsLabelsProvider(): array
+    {
+        return [
+            // working
+            [
+                'attribute' => [
+                    'label1',
+                    'label2',
+                    'label3'
+                ],
+                'expected' => [
+                    'val1' => 'label1',
+                    'val2' => 'label2',
+                    'val3' => 'label3',
+                ]
+            ],
+            // mismatch in number labels
+            [
+                'attribute' => [
+                    'label4',
+                ],
+                'expected' => []
+            ],
+            // no such attribute
+            [
+                'attribute' => null,
+                'expected' => []
+            ]
+        ];
+    }
+    /**
+     * @dataProvider attributeAsLabelsProvider
+     * @param ?array $attributeWithLabels
+     * @param array $expectedLabels
+     * @return void
+     * @throws NoState
+     */
+
+    public function testAttributeLabelsFromOtherAttributes(?array $attributeWithLabels, array $expectedLabels)
+    {
+        $expectedUrl = 'http://localhost/simplesaml/module.php/cirrusgeneral/prompt.php';
+        $config = [
+            'attribute' => 'someAttribute',
+            'labelsFromAttribute' => 'labelsAttribute'
+        ];
+        $filter = new PromptAttributeRelease($config, null);
+        $stateId = null;
+        if (isset($attributeWithLabels)) {
+            $this->state['Attributes']['labelsAttribute'] = $attributeWithLabels;
+        }
+        try {
+            $filter->process($this->state);
+            $this->fail('Redirect exception expected');
+        } catch (RedirectException $e) {
+            $this->assertEquals('redirectTrustedURL', $e->getMessage());
+            $this->assertEquals(
+                $expectedUrl,
+                $e->getUrl(),
+                "First argument should be the redirect url"
+            );
+            $this->assertArrayHasKey('StateId', $e->getParams(), "StateId is added");
+            $stateId = $e->getParams()['StateId'];
+        }
+        $expectedPromptState = [
+            'attributeName' => 'someAttribute',
+            'values' => ['val1', 'val2', 'val3'],
+            'attributeLabels' => $expectedLabels,
+            'displayAttributeValue' => true
+        ];
+        $storedState = State::loadState($stateId, PromptAttributeRelease::$STATE_STAGE);
+        $this->assertEquals($expectedPromptState, $storedState['cirrusgeneral:prompt']);
+    }
+
     public function testThatPromptSetStateAndRedirects()
     {
         $expectedUrl = 'http://localhost/simplesaml/module.php/cirrusgeneral/prompt.php';
