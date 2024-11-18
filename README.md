@@ -214,6 +214,30 @@ Usage:
                 ),
 ```
 
+# MapAttributeNameFromAttributeValue
+
+This AuthProc filter allows you map the name of an attribute where that name is based on the value in another attribute.
+For example, lets say a user had several roles, `'roles' => ['student', 'staff']` and use the `PromptAttributeRelease` to
+have the user pick which role they want to assert. The user picks `staff`, and now `'roles' => ['staff']`.  The user has
+two other attributes,  attributes associated with the permissions for each role: `'permissions.staff' => ['admin']` and
+`'permissions.student' => ['read']`.  Once the user picks `staff` as their role, you want to autoselect the staff permissions
+to assert, and `MapAttributeNameFrmAttributeValue` can do that.
+
+In the below usage example, the authproc will look at the first value from `roles`. It will then use that value (`staff` for example)
+and then look add `srcAttributePrefix` to the front to make the attribute name `permissions.staff`. It will then create
+an attribute `destinationAttribute` with the same value as the attribute `permissions.staff`.
+
+Usage:
+```php
+// In your authProc config
+    20 => [
+        'class' => 'cirrusgeneral:MapAttributeNameFromAttributeValue',
+        'valueAttribute' => 'roles',
+        'destinationAttribute' => 'permissions',
+        'srcAttributePrefix' => 'permissions.'
+    ]
+```
+
 # AttributeRemove
 
 This AuthProc filter allows you to define attributes that should always be removed. We use it with
