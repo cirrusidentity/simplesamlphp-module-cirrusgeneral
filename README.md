@@ -168,7 +168,10 @@ would allow user to select which of their affiliations to release.
              'student' => 'Student Role',
              'member'  => 'Generic Role'
              // any other values don't get a label and are shown as the plain value in the UI
-         ]
+         ],
+         // optional: use a user attribute as the source of labels. It must have the same
+         // amount of elements as the attribute with the values
+         'labelsFromAttribute' => 'affilDescriptions',
          // optional: should the attribute value be shown after the label? defaults to true
          'displayAttributeValue' => false
 ```
@@ -209,6 +212,30 @@ Usage:
                     'value' => 'http://schemas.microsoft.com/claims/multipleauthn',
                     'contextToAssert' => 'https://refeds.org/profile/mfa',
                 ),
+```
+
+# MapAttributeNameFromAttributeValue
+
+This AuthProc filter allows you map the name of an attribute where that name is based on the value in another attribute.
+For example, lets say a user had several roles, `'roles' => ['student', 'staff']` and use the `PromptAttributeRelease` to
+have the user pick which role they want to assert. The user picks `staff`, and now `'roles' => ['staff']`.  The user has
+two other attributes,  attributes associated with the permissions for each role: `'permissions.staff' => ['admin']` and
+`'permissions.student' => ['read']`.  Once the user picks `staff` as their role, you want to autoselect the staff permissions
+to assert, and `MapAttributeNameFrmAttributeValue` can do that.
+
+In the below usage example, the authproc will look at the first value from `roles`. It will then use that value (`staff` for example)
+and then look add `srcAttributePrefix` to the front to make the attribute name `permissions.staff`. It will then create
+an attribute `destinationAttribute` with the same value as the attribute `permissions.staff`.
+
+Usage:
+```php
+// In your authProc config
+    20 => [
+        'class' => 'cirrusgeneral:MapAttributeNameFromAttributeValue',
+        'valueAttribute' => 'roles',
+        'destinationAttribute' => 'permissions',
+        'srcAttributePrefix' => 'permissions.'
+    ]
 ```
 
 # AttributeRemove
