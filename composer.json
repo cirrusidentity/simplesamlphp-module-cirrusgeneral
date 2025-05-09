@@ -20,6 +20,11 @@
         "squizlabs/php_codesniffer": "*",
         "vimeo/psalm": "^5.8"
     },
+    "autoload": {
+        "psr-4": {
+            "SimpleSAML\\Module\\cirrusgeneral\\": "src/"
+        }
+    },
     "autoload-dev": {
         "psr-4": {
             "Test\\SimpleSAML\\": "tests/lib/"
